@@ -1,0 +1,3357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ПОДЪЕЗД — БАБЫ ЗИНЫ</title>
+  <!-- Telegram Mini App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Caveat (для рукописной тетрадки Бабы Зины) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0f0d1c;
+      --bg-card: #18152b;
+      --bg-card-hover: #211d3a;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --gold: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.35);
+      --paper-bg: #fdf8eb;
+      --paper-line: #dce5f2;
+      --paper-margin: #f28b82;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #090812;
+      color: #f3f4f6;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* Контейнер Telegram Mini App */
+    #app-shell {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #131024 0%, #0f0d1c 100%);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.85);
+      padding-bottom: 28px;
+    }
+
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+
+    /* Стилизация тетрадного листа Бабы Зины */
+    .notebook-sheet {
+      background-color: var(--paper-bg);
+      color: #1e293b;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 27px,
+        var(--paper-line) 28px
+      );
+      position: relative;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.9);
+      overflow: hidden;
+    }
+
+    .notebook-sheet::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 34px;
+      width: 2px;
+      background-color: var(--paper-margin);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .notebook-holes {
+      position: absolute;
+      top: 14px;
+      bottom: 14px;
+      left: 11px;
+      width: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .notebook-hole {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #141126;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* Состаренный бланк 51-й квартиры */
+    .mystery-letter {
+      background: radial-gradient(circle at top left, #f5e6c8 0%, #e4cda2 55%, #cfa972 100%);
+      color: #2b1d0e;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.85), inset 0 0 40px rgba(120, 72, 24, 0.35);
+      border: 2px solid #8c5a2b;
+    }
+
+    /* Игровые кнопки */
+    .btn-game {
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-game:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .btn-game:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    .btn-gold {
+      background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%);
+      color: #1c1917;
+      box-shadow: 0 4px 0 #b45309, 0 8px 18px rgba(245, 158, 11, 0.35);
+    }
+    .btn-gold:active:not(:disabled) {
+      box-shadow: 0 1px 0 #b45309, 0 3px 8px rgba(245, 158, 11, 0.3);
+      transform: translateY(3px);
+    }
+
+    .btn-orange {
+      background: linear-gradient(180deg, #fdba74 0%, #f97316 100%);
+      color: #1c1917;
+      box-shadow: 0 4px 0 #c2410c, 0 8px 18px rgba(249, 115, 22, 0.35);
+    }
+    .btn-orange:active:not(:disabled) {
+      box-shadow: 0 1px 0 #c2410c;
+      transform: translateY(3px);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(180deg, #6ee7b7 0%, #10b981 100%);
+      color: #064e3b;
+      box-shadow: 0 4px 0 #047857, 0 8px 18px rgba(16, 185, 129, 0.35);
+    }
+    .btn-emerald:active:not(:disabled) {
+      box-shadow: 0 1px 0 #047857;
+      transform: translateY(3px);
+    }
+
+    .btn-tg {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 0 #0369a1, 0 10px 24px rgba(14, 165, 233, 0.4);
+    }
+    .btn-tg:active:not(:disabled) {
+      box-shadow: 0 1px 0 #0369a1;
+      transform: translateY(3px);
+    }
+
+    /* Всплывающие уведомления */
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(0.9); }
+      20% { transform: translateY(-10px) scale(1.08); }
+      100% { opacity: 0; transform: translateY(-55px) scale(0.95); }
+    }
+    .floating-toast {
+      position: absolute;
+      pointer-events: none;
+      font-weight: 800;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+      animation: floatUp 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 50;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-shell">
+    <!-- ВЕРХНИЙ ЗАКРЕПЛЕННЫЙ HUD -->
+    <header class="sticky top-0 z-30 bg-[#120f22]/95 backdrop-blur-md border-b border-white/10 px-3 pt-2 pb-2">
+      <!-- Фирменная плашка названия -->
+      <div class="flex items-center justify-between mb-1.5 px-0.5">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="text-sm">👵</span>
+          <span class="text-[11px] font-black tracking-wider uppercase text-amber-300 truncate">ПОДЪЕЗД — БАБЫ ЗИНЫ</span>
+          <span id="phase-pill" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-indigo-500/25 border border-indigo-400/40 text-indigo-200 shrink-0">ФАЗА I</span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="openEndingsGalleryModal()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition" title="Открытые концовки">
+            <span class="text-[10px]">🏆</span>
+            <span id="hud-endings-count" class="text-[10px] font-black text-purple-200">0/10</span>
+          </button>
+          <button onclick="openStarsModal()" class="bg-gradient-to-r from-amber-500/25 to-yellow-500/20 hover:from-amber-500/35 border border-amber-400/50 px-2 py-0.5 rounded-full flex items-center gap-1 active:scale-95 transition">
+            <span class="text-[11px]">⭐</span>
+            <span id="hud-stars" class="text-[11px] font-black text-amber-300">50</span>
+            <span class="text-[9px] font-bold text-amber-200/80">+</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 главные карточки ресурсов + звук -->
+      <div class="grid grid-cols-12 gap-1.5 items-stretch">
+        <!-- СРОК, ДН. -->
+        <div class="col-span-3 bg-gradient-to-b from-[#1e1a36] to-[#141126] border border-amber-500/30 rounded-xl px-2 py-1.5 flex items-center gap-1.5 shadow-inner">
+          <span class="text-base leading-none">⏳</span>
+          <div class="min-w-0">
+            <div class="text-[9px] font-bold tracking-wider text-slate-400 uppercase truncate">СРОК, ДН.</div>
+            <div id="hud-days-left" class="text-sm font-black text-amber-400 leading-tight">365</div>
+          </div>
+        </div>
+
+        <!-- ЖИЛЬЦЫ -->
+        <div class="col-span-4 bg-gradient-to-b from-[#152824] to-[#101c1a] border border-emerald-500/30 rounded-xl px-2 py-1.5 flex items-center gap-1.5 shadow-inner">
+          <span class="text-base leading-none">👥</span>
+          <div class="min-w-0">
+            <div class="text-[9px] font-bold tracking-wider text-slate-400 uppercase truncate">ЖИЛЬЦЫ</div>
+            <div id="hud-tenants" class="text-xs sm:text-sm font-black text-emerald-300 leading-tight truncate">1/50</div>
+          </div>
+        </div>
+
+        <!-- БЮДЖЕТ, ₽ -->
+        <div class="col-span-4 bg-gradient-to-b from-[#2b2212] to-[#1a140b] border border-amber-400/40 rounded-xl px-2 py-1.5 flex items-center gap-1.5 shadow-inner">
+          <div class="w-4 h-4 rounded-full bg-amber-400 text-amber-950 font-black text-[10px] flex items-center justify-center shrink-0 shadow">₽</div>
+          <div class="min-w-0">
+            <div class="text-[9px] font-bold tracking-wider text-amber-200/70 uppercase truncate">БЮДЖЕТ</div>
+            <div id="hud-budget" class="text-xs font-black text-amber-400 leading-tight truncate">3 000 000</div>
+          </div>
+        </div>
+
+        <!-- Кнопка звука -->
+        <button id="btn-sound" onclick="toggleSound()" class="col-span-1 bg-[#1b1730] hover:bg-[#252042] border border-white/10 rounded-xl flex items-center justify-center text-sky-400 active:scale-95 transition" title="Звук">
+          <span id="sound-icon" class="text-sm">🔊</span>
+        </button>
+      </div>
+
+      <!-- Панель селектора скорости (1x | 1.5x | 5x ⭐5 | 10x ⭐10) + Таймер дня (5 минут на 1x) -->
+      <div class="mt-2 flex items-center justify-between gap-1.5">
+        <!-- Переключатель скоростей -->
+        <div class="flex items-center bg-[#18142e] border border-white/10 rounded-lg p-0.5 gap-0.5">
+          <button id="spd-btn-1" onclick="selectSpeed(1)" class="px-1.5 py-0.5 rounded text-[10px] font-extrabold transition">1x</button>
+          <button id="spd-btn-1.5" onclick="selectSpeed(1.5)" class="px-1.5 py-0.5 rounded text-[10px] font-extrabold transition">1.5x</button>
+          <button id="spd-btn-5" onclick="selectSpeed(5)" class="px-1.5 py-0.5 rounded text-[10px] font-extrabold transition flex items-center gap-0.5">
+            <span>5x</span><span id="spd-tag-5" class="text-[8.5px] text-amber-300">⭐5</span>
+          </button>
+          <button id="spd-btn-10" onclick="selectSpeed(10)" class="px-1.5 py-0.5 rounded text-[10px] font-extrabold transition flex items-center gap-0.5">
+            <span>10x</span><span id="spd-tag-10" class="text-[8.5px] text-amber-300">⭐10</span>
+          </button>
+        </div>
+
+        <!-- Таймер дня -->
+        <div class="flex items-center gap-1.5 text-[10.5px] text-slate-300">
+          <span>Д.<b id="hud-day" class="text-white">0</b></span>
+          <span id="hud-day-countdown" class="font-mono font-extrabold text-amber-300 bg-black/30 px-1.5 py-0.5 rounded border border-white/5">05:00</span>
+        </div>
+
+        <!-- Энергия и прогресс -->
+        <div class="flex items-center gap-1 shrink-0">
+          <div class="bg-emerald-950/90 border border-emerald-500/40 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="hud-energy" class="text-[10px] font-extrabold text-emerald-300">100</span>
+          </div>
+          <div class="w-6 h-1.5 bg-slate-800 rounded-full overflow-hidden border border-white/5">
+            <div id="day-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 w-0 transition-all duration-150"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- БАННЕР ЗАВЕРШЁННОЙ ИГРЫ ИЛИ ДОСТУПНОГО ФИНАЛА -->
+    <div id="game-ended-banner" class="hidden mx-3 mt-2.5 bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-sky-500/20 border border-amber-400/50 rounded-2xl p-2.5 flex items-center justify-between gap-2 shadow-lg">
+      <div class="min-w-0">
+        <div id="ended-banner-title" class="text-xs font-black text-amber-300 truncate">🏁 Этап полностью построен!</div>
+        <div id="ended-banner-sub" class="text-[10px] text-slate-300 truncate">В игре 10 концовок (2 плохие и 8 хороших)</div>
+      </div>
+      <button id="ended-banner-btn" onclick="handleBannerFinalAction()" class="btn-game btn-gold px-3 py-1.5 rounded-xl text-[11px] font-black shrink-0">
+        Подвести итоги
+      </button>
+    </div>
+
+    <!-- СЦЕНА ЗДАНИЯ (CANVAS С ДЕТАЛИЗИРОВАННЫМ ИНТЕРЬЕРОМ, ЛИФТОМ И МЕГА-ДОМОМ ДО 1300 ЧЕЛОВЕК) -->
+    <section class="px-3 pt-2.5">
+      <div id="canvas-wrapper" class="relative w-full rounded-2xl overflow-hidden border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.75)] bg-[#141126]">
+        <canvas id="building-canvas" class="block w-full cursor-pointer"></canvas>
+
+        <!-- Панель управления секциями Мега-Дома (Фаза II) -->
+        <div id="megahouse-controls" class="hidden absolute top-2.5 right-2.5 bg-[#120f22]/90 backdrop-blur-md border border-amber-400/40 rounded-xl px-2 py-1 flex items-center gap-1.5 shadow-lg z-20">
+          <span class="text-[10px] font-extrabold text-amber-300">🏗️ <span id="mega-floors-badge">5 эт.</span></span>
+          <button onclick="cycleMegaSection()" class="bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40 text-amber-200 text-[10px] font-bold px-2 py-0.5 rounded-lg active:scale-95">
+            Корпус <span id="mega-section-label">1</span> ↻
+          </button>
+        </div>
+
+        <!-- Баннер активной стройки -->
+        <div id="construction-banner" class="hidden absolute top-2.5 left-2.5 right-2.5 bg-[#120f22]/95 backdrop-blur-md border border-amber-400/40 rounded-xl px-3 py-2 flex items-center justify-between shadow-lg z-20">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-base animate-bounce">🚧</span>
+            <div class="min-w-0">
+              <div id="constr-title" class="text-xs font-bold text-amber-300 truncate">Стройка: Дверь с домофоном</div>
+              <div id="constr-days" class="text-[10px] text-slate-300">Осталось: 6 дн.</div>
+            </div>
+          </div>
+          <button onclick="buyStarFeature('speedup')" class="bg-amber-400/25 hover:bg-amber-400/35 border border-amber-400/60 text-amber-300 text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 active:scale-95">
+            ⚡ Сразу (5 ⭐)
+          </button>
+        </div>
+
+        <!-- Реплика Бабы Зины -->
+        <div id="zina-bubble" class="hidden absolute bottom-2.5 left-2.5 right-2.5 bg-[#161329]/95 backdrop-blur-md border border-white/15 rounded-xl p-2.5 flex items-center gap-2.5 shadow-xl transition-all z-20">
+          <div class="w-9 h-9 rounded-full bg-rose-900/80 border border-rose-400/40 flex items-center justify-center text-lg shrink-0">👵</div>
+          <div class="text-xs text-slate-200 leading-snug flex-1" id="zina-text">
+            «Внучок, начни с домофона в моей тетрадке, а то в подъезде проходной двор!»
+          </div>
+          <button onclick="hideZinaBubble()" class="text-slate-400 hover:text-white text-xs px-1">✕</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ПАНЕЛЬ БЫСТРЫХ ДЕЙСТВИЙ -->
+    <section class="px-3 pt-2.5">
+      <div class="grid grid-cols-3 gap-2">
+        <!-- Собрать квартплату -->
+        <button id="btn-collect" onclick="collectRent()" class="btn-game rounded-xl p-2.5 flex flex-col items-start justify-between border border-emerald-500/30 bg-[#182924] text-left relative overflow-hidden">
+          <div class="flex items-center gap-1.5 w-full">
+            <span class="text-base">💵</span>
+            <span id="collect-amount" class="text-sm font-black text-emerald-300 truncate">0 ₽</span>
+          </div>
+          <span class="text-[11px] font-semibold text-emerald-200/70 mt-0.5">Собрать</span>
+        </button>
+
+        <!-- Ремонт квартиры -->
+        <button id="btn-repair" onclick="repairRandomApartment()" class="btn-game btn-gold rounded-xl p-2.5 flex flex-col items-start justify-between text-left">
+          <div class="flex items-center gap-1.5 w-full">
+            <span class="text-base">🔨</span>
+            <span class="text-sm font-black leading-none">Ремонт</span>
+          </div>
+          <span id="repair-cost-label" class="text-[11px] font-extrabold opacity-85 mt-0.5">60 000 ₽</span>
+        </button>
+
+        <!-- Пирожки Бабы Зины -->
+        <button id="btn-pirozhki" onclick="sellPirozhki()" class="btn-game btn-orange rounded-xl p-2.5 flex flex-col items-start justify-between text-left relative">
+          <div class="flex items-center gap-1.5 w-full">
+            <span class="text-base">🥟</span>
+            <span class="text-sm font-black leading-none">Пирожки</span>
+            <span id="pirozhki-x2-badge" class="hidden bg-rose-600 text-white text-[9px] font-black px-1 rounded">x2</span>
+          </div>
+          <span id="pirozhki-reward-label" class="text-[11px] font-extrabold opacity-85 mt-0.5">+20 000 ₽</span>
+        </button>
+      </div>
+
+      <!-- Статусы квартир -->
+      <div class="mt-2.5 grid grid-cols-4 gap-1.5 text-[11px]">
+        <div class="bg-[#18152b] border border-white/10 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1">
+          <span class="w-2 h-2 rounded-sm bg-amber-400"></span>
+          <span class="text-slate-300">Живут</span>
+          <span id="stat-occupied" class="font-bold text-white">1</span>
+        </div>
+        <div class="bg-[#18152b] border border-white/10 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1">
+          <span class="w-2 h-2 rounded-sm bg-sky-400"></span>
+          <span class="text-slate-300">Сдаются</span>
+          <span id="stat-ready" class="font-bold text-white">0</span>
+        </div>
+        <div class="bg-[#18152b] border border-white/10 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1">
+          <span class="w-2 h-2 rounded-sm bg-emerald-400"></span>
+          <span class="text-slate-300">Ремонт</span>
+          <span id="stat-repairing" class="font-bold text-white">0</span>
+        </div>
+        <div class="bg-[#18152b] border border-white/10 rounded-lg py-1 px-1.5 flex items-center justify-center gap-1">
+          <span class="w-2 h-2 rounded-sm bg-amber-800"></span>
+          <span class="text-slate-300">Разруха</span>
+          <span id="stat-ruined" class="font-bold text-white">49</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- НАВИГАЦИОННЫЕ ВКЛАДКИ -->
+    <nav class="px-3 pt-3">
+      <div class="grid grid-cols-5 gap-1.5 bg-[#141126] p-1 rounded-2xl border border-white/10">
+        <button onclick="switchTab('notebook')" id="tab-btn-notebook" class="tab-btn relative py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[11px] font-bold transition bg-[#241f42] text-amber-300 border border-amber-400/40">
+          <span class="text-base">📒</span>
+          <span>Тетрадь</span>
+        </button>
+
+        <button onclick="switchTab('events')" id="tab-btn-events" class="tab-btn relative py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[11px] font-bold transition text-slate-400 hover:text-white">
+          <span class="text-base">⚡</span>
+          <span>События</span>
+          <span id="badge-events" class="hidden absolute top-1 right-2 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">1</span>
+        </button>
+
+        <button onclick="switchTab('games')" id="tab-btn-games" class="tab-btn relative py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[11px] font-bold transition text-slate-400 hover:text-white">
+          <span class="text-base">🎮</span>
+          <span>Игры</span>
+          <span class="absolute top-1 right-2 w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black flex items-center justify-center">3</span>
+        </button>
+
+        <button onclick="switchTab('goals')" id="tab-btn-goals" class="tab-btn relative py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[11px] font-bold transition text-slate-400 hover:text-white">
+          <span class="text-base">🏅</span>
+          <span>Цели</span>
+          <span id="badge-goals" class="hidden absolute top-1 right-2 w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black flex items-center justify-center">!</span>
+        </button>
+
+        <button onclick="switchTab('stats')" id="tab-btn-stats" class="tab-btn relative py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[11px] font-bold transition text-slate-400 hover:text-white">
+          <span class="text-base">🏢</span>
+          <span>Подъезд</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- КОНТЕНТ ВКЛАДОК -->
+    <main class="px-3 pt-3 flex-1">
+      <!-- 1. ВКЛАДКА: ТЕТРАДЬ БАБЫ ЗИНЫ + ЗВЁЗДНЫЙ МАГАЗИН -->
+      <div id="tab-notebook" class="tab-pane space-y-3">
+        <!-- Основной тетрадный лист -->
+        <div class="notebook-sheet p-4 pl-11">
+          <div class="notebook-holes">
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+          </div>
+
+          <div class="flex items-center justify-between border-b border-slate-300/80 pb-1.5 mb-2.5">
+            <h2 class="font-handwriting text-2xl font-bold text-indigo-800 tracking-wide">Тетрадка Бабы Зины</h2>
+            <span class="text-xs font-bold text-slate-500">уют <span id="notebook-coziness" class="text-indigo-700">0</span>/100</span>
+          </div>
+
+          <div id="notebook-upgrades-list" class="space-y-3">
+            <!-- Генерируется JS -->
+          </div>
+        </div>
+
+        <!-- Новые страницы (Тайна 51 квартиры + Фаза II: Мега-Дом до 1300 жильцов) -->
+        <div id="notebook-secret-card" class="notebook-sheet p-4 pl-11">
+          <div class="notebook-holes">
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+          </div>
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-handwriting text-xl font-bold text-indigo-800">Новые страницы (Чертежи 1974)</h3>
+            <span id="secret-lock-icon" class="text-sm">🔒</span>
+          </div>
+          <div id="secret-content">
+            <div class="flex items-start gap-2.5 mt-1">
+              <span class="text-lg mt-0.5">✉️</span>
+              <div>
+                <div class="text-xs font-extrabold text-slate-800">Тайна квартиры № 51</div>
+                <p class="text-[11px] text-slate-600 leading-snug mt-0.5">
+                  Сначала почини лифт (пункт 5), чтобы открыть событие «Конверт в лифте» и узнать, что скрывается за бетонной стеной.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Стройплощадка Мега-Дома (Открывается в Фазе II) -->
+        <div id="megahouse-panel" class="hidden notebook-sheet p-4 pl-11 border-2 border-amber-400">
+          <div class="notebook-holes">
+            <div class="notebook-hole"></div><div class="notebook-hole"></div><div class="notebook-hole"></div>
+            <div class="notebook-hole"></div><div class="notebook-hole"></div>
+          </div>
+          <div class="flex items-center justify-between border-b border-amber-600/30 pb-1.5 mb-2">
+            <h3 class="font-handwriting text-2xl font-bold text-amber-900">Мега-Дом Бабы Зины (до 1 300 жильцов)</h3>
+            <span class="text-[11px] font-black bg-amber-500/20 text-amber-900 px-2 py-0.5 rounded-full">ФАЗА II</span>
+          </div>
+          <p class="text-[11px] text-slate-700 mb-3 leading-snug">
+            Фундамент нулевого цикла выдержит до <b>14 этажей</b> и <b>3 широких корпусов</b>! Надстраивай этажи вверх и расширяй дом вширь.
+          </p>
+          <div id="megahouse-upgrades-list" class="space-y-2.5">
+            <!-- Генерируется JS -->
+          </div>
+        </div>
+
+        <!-- ПОМОЩЬ ПОДЪЕЗДУ ЗА TELEGRAM STARS (5 - 10 ⭐) -->
+        <div class="bg-[#18152b] border border-amber-400/30 rounded-2xl p-3.5 space-y-2.5 shadow-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-extrabold text-amber-300 uppercase tracking-wider">Лавка Бабы Зины • за ⭐</span>
+            </div>
+            <span class="text-[10px] text-slate-400">Цены 5–10 ⭐</span>
+          </div>
+
+          <!-- Ускорение времени навсегда -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex flex-col justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-base">⏩</span>
+                  <div class="text-xs font-extrabold text-white">Скорость 5x</div>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">День за 1 мин • Навсегда</div>
+              </div>
+              <button id="shop-btn-speed5" onclick="purchasePermanentSpeed(5)" class="w-full py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] active:scale-95 transition">
+                5 ⭐ Навсегда
+              </button>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex flex-col justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-base">🚀</span>
+                  <div class="text-xs font-extrabold text-white">Скорость 10x</div>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-0.5">День за 30 сек • Навсегда</div>
+              </div>
+              <button id="shop-btn-speed10" onclick="purchasePermanentSpeed(10)" class="w-full py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] active:scale-95 transition">
+                10 ⭐ Навсегда
+              </button>
+            </div>
+          </div>
+
+          <!-- Остальные услуги за 5-10 ⭐ -->
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-base shrink-0">⚡</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">Ускорить бригаду</div>
+                <div class="text-[10px] text-slate-400 truncate">Мгновенно завершить стройку и ремонты</div>
+              </div>
+            </div>
+            <button onclick="buyStarFeature('speedup')" class="px-3 py-1.5 rounded-lg bg-[#252042] hover:bg-[#312a57] border border-amber-400/40 text-amber-300 font-extrabold text-xs shrink-0 active:scale-95">
+              5 ⭐
+            </button>
+          </div>
+
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-400/30 flex items-center justify-center text-base shrink-0">🥟</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">Секретный рецепт Зины</div>
+                <div class="text-[10px] text-slate-400 truncate">Доход от пирожков x2 навсегда + партия</div>
+              </div>
+            </div>
+            <button id="shop-btn-recipe" onclick="buyStarFeature('recipe')" class="px-3 py-1.5 rounded-lg bg-[#252042] hover:bg-[#312a57] border border-amber-400/40 text-amber-300 font-extrabold text-xs shrink-0 active:scale-95">
+              6 ⭐
+            </button>
+          </div>
+
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-base shrink-0">🛠️</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">Массовый ремонт крыла</div>
+                <div class="text-[10px] text-slate-400 truncate">Сразу отремонтировать до 5 квартир</div>
+              </div>
+            </div>
+            <button onclick="buyStarFeature('mass_repair')" class="px-3 py-1.5 rounded-lg bg-[#252042] hover:bg-[#312a57] border border-amber-400/40 text-amber-300 font-extrabold text-xs shrink-0 active:scale-95">
+              7 ⭐
+            </button>
+          </div>
+
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-400/30 flex items-center justify-center text-base shrink-0">📅</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">Отсрочка по налогам +30 дн.</div>
+                <div class="text-[10px] text-slate-400 truncate">Добавить целый месяц к сроку</div>
+              </div>
+            </div>
+            <button onclick="buyStarFeature('postpone')" class="px-3 py-1.5 rounded-lg bg-[#252042] hover:bg-[#312a57] border border-amber-400/40 text-amber-300 font-extrabold text-xs shrink-0 active:scale-95">
+              8 ⭐
+            </button>
+          </div>
+
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-400/30 flex items-center justify-center text-base shrink-0">🏗️</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white truncate">Промышленный кран и бетон</div>
+                <div class="text-[10px] text-slate-400 truncate">+500 000 ₽ в бюджет или ярус Мега-Дома</div>
+              </div>
+            </div>
+            <button onclick="buyStarFeature('crane')" class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs shrink-0 active:scale-95">
+              10 ⭐
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ВКЛАДКА: СОБЫТИЯ -->
+      <div id="tab-events" class="tab-pane hidden space-y-2.5">
+        <div class="bg-[#18152b] border border-white/10 rounded-2xl p-3.5">
+          <div class="flex flex-col gap-1 mb-2.5">
+            <h2 class="text-sm font-extrabold text-white">Журнал событий подъезда</h2>
+            <div class="text-[11px] text-amber-300/90 bg-amber-400/10 border border-amber-400/25 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5">
+              <span>🎲</span>
+              <span>События в подъезде происходят сами случайным образом во время игры</span>
+            </div>
+          </div>
+          <div id="events-list" class="space-y-2.5">
+            <!-- Генерируется JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ВКЛАДКА: МИНИ-ИГРЫ -->
+      <div id="tab-games" class="tab-pane hidden space-y-2.5">
+        <div class="bg-[#18152b] border border-white/10 rounded-2xl p-3.5 space-y-2.5">
+          <div>
+            <h2 class="text-sm font-extrabold text-white">Подработка и дела в подъезде</h2>
+            <p class="text-[11px] text-slate-400">Играй в мини-игры, чтобы заработать бюджет, энергию и уют.</p>
+          </div>
+
+          <div class="bg-[#120f22] border border-amber-400/30 rounded-xl p-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-2xl">🔌</div>
+              <div>
+                <div class="text-xs font-extrabold text-white">Почини проводку</div>
+                <div class="text-[11px] text-slate-400">Соедини провода в щитке на время</div>
+                <div class="text-[10px] font-bold text-emerald-400 mt-0.5">Награда: +35 000 ₽ и +2 уюта</div>
+              </div>
+            </div>
+            <button onclick="openMiniGame('wires')" class="btn-game btn-gold px-3.5 py-2 rounded-xl text-xs font-black shrink-0">Играть</button>
+          </div>
+
+          <div class="bg-[#120f22] border border-emerald-400/30 rounded-xl p-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-2xl">💸</div>
+              <div>
+                <div class="text-xs font-extrabold text-white">Собери квартплату</div>
+                <div class="text-[11px] text-slate-400">Лови падающие купюры и монеты</div>
+                <div class="text-[10px] font-bold text-emerald-400 mt-0.5">Награда: до +50 000 ₽</div>
+              </div>
+            </div>
+            <button onclick="openMiniGame('catch')" class="btn-game btn-emerald px-3.5 py-2 rounded-xl text-xs font-black shrink-0">Играть</button>
+          </div>
+
+          <div class="bg-[#120f22] border border-orange-400/30 rounded-xl p-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-orange-500/20 border border-orange-400/40 flex items-center justify-center text-2xl">🥟</div>
+              <div>
+                <div class="text-xs font-extrabold text-white">Пирожки Бабы Зины</div>
+                <div class="text-[11px] text-slate-400">Снимай пирожки с противня вовремя</div>
+                <div class="text-[10px] font-bold text-amber-300 mt-0.5">Награда: +25 энергии и +30 000 ₽</div>
+              </div>
+            </div>
+            <button onclick="openMiniGame('pirozhki')" class="btn-game btn-orange px-3.5 py-2 rounded-xl text-xs font-black shrink-0">Играть</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. ВКЛАДКА: ЦЕЛИ -->
+      <div id="tab-goals" class="tab-pane hidden space-y-2.5">
+        <div class="bg-[#18152b] border border-white/10 rounded-2xl p-3.5">
+          <h2 class="text-sm font-extrabold text-white mb-2.5">Цели и достижения дома</h2>
+          <div id="goals-list" class="space-y-2">
+            <!-- Генерируется JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. ВКЛАДКА: ПОДЪЕЗД (СВОДКА, КОЛЛЕКЦИЯ КОНЦОВОК И ИНСТРУКТАЖ) -->
+      <div id="tab-stats" class="tab-pane hidden space-y-3">
+        <!-- Блок коллекции концовок -->
+        <div class="bg-gradient-to-br from-[#231942] to-[#18152b] border border-purple-400/35 rounded-2xl p-3.5 shadow-lg">
+          <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🏆</span>
+              <div>
+                <h2 class="text-sm font-extrabold text-white">Галерея концовок</h2>
+                <p class="text-[10px] text-purple-200/80">2 плохие и 8 хороших концовок</p>
+              </div>
+            </div>
+            <span id="stats-endings-badge" class="text-xs font-black px-2.5 py-1 rounded-full bg-purple-500/25 border border-purple-400/50 text-purple-200">0 / 10</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-snug mb-2.5">
+            Исследуйте разные стили прохождения: раскройте тайну 51-й квартиры, постройте пирожковую империю, станьте олигархом ЖКХ или доведите дом до сноса.
+          </p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openEndingsGalleryModal()" class="btn-game bg-purple-500/25 hover:bg-purple-500/35 border border-purple-400/50 text-purple-100 py-2 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5">
+              <span>📜</span> Все 10 концовок
+            </button>
+            <button onclick="checkAndTriggerFinalManual()" class="btn-game btn-gold py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5">
+              <span>🏁</span> Подвести итоги
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#18152b] border border-white/10 rounded-2xl p-3.5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-extrabold text-white">Сводка: ПОДЪЕЗД — БАБЫ ЗИНЫ</h2>
+            <span id="stats-phase-label" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-400/20 text-amber-300">Фаза I (50 кв.)</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Уют подъезда</div>
+              <div class="text-base font-black text-white mt-0.5"><span id="stat-coziness">0</span>/100</div>
+              <div class="w-full h-1.5 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
+                <div id="stat-coziness-bar" class="h-full bg-amber-400 w-0"></div>
+              </div>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Аренда с квартиры</div>
+              <div class="text-base font-black text-emerald-300 mt-0.5"><span id="stat-rent-per-apt">500</span> ₽/день</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">растёт от уюта и лифта</div>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Этажей / Корпусов</div>
+              <div class="text-base font-black text-sky-300 mt-0.5"><span id="stat-floors">5</span> эт. / <span id="stat-wings">1</span> корп.</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Макс: 14 эт., 1 300 жильцов</div>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Ремонт квартиры</div>
+              <div class="text-base font-black text-amber-300 mt-0.5"><span id="stat-repair-cost">60 000</span> ₽</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">дороже с ростом дома</div>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Пирожки Бабы Зины</div>
+              <div class="text-base font-black text-orange-300 mt-0.5">до <span id="stat-pirozhki-max">20 000</span> ₽</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">продано: <span id="stat-pirozhki-sold">0</span> раз</div>
+            </div>
+
+            <div class="bg-[#120f22] border border-white/10 rounded-xl p-3">
+              <div class="text-[11px] text-slate-400">Квартплаты собрано</div>
+              <div class="text-base font-black text-white mt-0.5"><span id="stat-total-collected">0</span> ₽</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">за всё время</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="openBriefingModal()" class="bg-[#18152b] hover:bg-[#221e3b] border border-white/15 rounded-xl py-3 text-xs font-bold text-slate-200 flex items-center justify-center gap-1.5 active:scale-95 transition">
+            <span>📖</span> Инструктаж
+          </button>
+          <button onclick="confirmResetGame()" class="bg-[#24131c] hover:bg-[#331926] border border-rose-500/30 rounded-xl py-3 text-xs font-bold text-rose-300 flex items-center justify-center gap-1.5 active:scale-95 transition">
+            <span>🔄</span> Сыграть еще раз
+          </button>
+        </div>
+
+        <!-- Ссылка на Telegram-канал автора -->
+        <button onclick="openAuthorTelegramChannel()" class="w-full btn-game btn-tg py-3 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2">
+          <span>📢</span>
+          <span>Подписаться на ТГК (t.me/kypi_za_rubl)</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ФИНАЛ ИГРЫ (10 КОНЦОВОК + СЫГРАТЬ ЕЩЕ РАЗ + ССЫЛКА НА ТГК) -->
+  <div id="ending-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3.5 overflow-y-auto">
+    <div id="ending-card-container" class="w-full max-w-md bg-gradient-to-b from-[#231942] via-[#18152b] to-[#120f22] border-2 border-amber-400/60 rounded-3xl p-4.5 shadow-[0_0_60px_rgba(251,191,36,0.3)] space-y-3 my-auto relative">
+      <!-- Верхний бейдж типа концовки + кнопка закрытия для осмотра дома -->
+      <div class="flex items-center justify-between gap-2">
+        <span id="ending-type-badge" class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-200">
+          ХОРОШАЯ КОНЦОВКА (1 из 8)
+        </span>
+        <button onclick="closeEndingModal()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white text-xs font-bold flex items-center justify-center" title="Закрыть и осмотреть дом">✕</button>
+      </div>
+
+      <!-- Иконка и заголовок концовки -->
+      <div class="flex items-center gap-3 pt-0.5">
+        <div id="ending-icon" class="w-14 h-14 rounded-2xl bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-3xl shrink-0 shadow-inner">
+          🏆
+        </div>
+        <div class="min-w-0">
+          <div class="text-[10px] font-bold uppercase tracking-widest text-amber-300/80">ИТОГ ПРОХОЖДЕНИЯ</div>
+          <h2 id="ending-title" class="text-lg font-black text-white leading-tight">Народный управдом</h2>
+          <div id="ending-subtitle" class="text-[11px] font-semibold text-amber-300 mt-0.5">Подъезд Бабы Зины спасён!</div>
+        </div>
+      </div>
+
+      <!-- Художественный текст от лица Бабы Зины -->
+      <div class="bg-[#110e20]/90 border border-white/10 rounded-2xl p-3 text-xs text-slate-200 leading-relaxed" id="ending-story">
+        «Внучок, ты совершил настоящее чудо! Наш старый подъезд превратился в легенду всего города...»
+      </div>
+
+      <!-- Итоговая статистика забега -->
+      <div class="grid grid-cols-3 gap-1.5 text-center">
+        <div class="bg-[#120f22] border border-white/10 rounded-xl p-2">
+          <div class="text-[9.5px] text-slate-400 uppercase font-bold">Прожито дней</div>
+          <div id="ending-stat-days" class="text-xs font-black text-white mt-0.5">0 дн.</div>
+        </div>
+        <div class="bg-[#120f22] border border-white/10 rounded-xl p-2">
+          <div class="text-[9.5px] text-slate-400 uppercase font-bold">Жильцов</div>
+          <div id="ending-stat-tenants" class="text-xs font-black text-emerald-300 mt-0.5">1 300</div>
+        </div>
+        <div class="bg-[#120f22] border border-white/10 rounded-xl p-2">
+          <div class="text-[9.5px] text-slate-400 uppercase font-bold">Бюджет</div>
+          <div id="ending-stat-budget" class="text-xs font-black text-amber-300 mt-0.5">3 000 000 ₽</div>
+        </div>
+      </div>
+
+      <!-- Уведомление о наличии других концовок + прогресс X / 10 -->
+      <div class="bg-purple-950/50 border border-purple-400/40 rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-purple-200">✨ В игре 10 уникальных концовок!</span>
+          <span id="ending-unlocked-counter" class="text-[11px] font-black px-2 py-0.5 rounded-full bg-purple-500/30 text-purple-100">Открыто 1 / 10</span>
+        </div>
+        <p class="text-[11px] text-purple-100/85 leading-snug">
+          В игре <b>2 плохие и 8 хороших концовок</b>! Попробуйте другие решения и стили игры, чтобы открыть остальные!
+        </p>
+        <!-- Мини-список открытых/закрытых концовок -->
+        <div id="ending-mini-list" class="grid grid-cols-2 gap-1 pt-1 max-h-28 overflow-y-auto pr-0.5">
+          <!-- Генерируется JS -->
+        </div>
+      </div>
+
+      <!-- Крупная кнопка-ссылка на Telegram-канал автора -->
+      <button onclick="openAuthorTelegramChannel()" class="w-full btn-game btn-tg py-3 px-4 rounded-2xl text-xs sm:text-sm font-black flex items-center justify-center gap-2">
+        <span class="text-base">📢</span>
+        <span>Подписаться на ТГК автора — t.me/kypi_za_rubl</span>
+      </button>
+
+      <!-- Крупная кнопка «Сыграть еще раз» -->
+      <button onclick="restartFromEnding()" class="w-full btn-game btn-gold py-3.5 px-4 rounded-2xl text-sm font-black flex items-center justify-center gap-2">
+        <span class="text-base">🔄</span>
+        <span>Сыграть еще раз</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ГАЛЕРЕЯ ВСЕХ 10 КОНЦОВОК -->
+  <div id="endings-gallery-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#18152b] border border-purple-400/40 rounded-2xl p-4 shadow-2xl space-y-3 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🏆</span>
+          <div>
+            <h3 class="text-sm font-extrabold text-white">Все 10 концовок игры</h3>
+            <div id="gallery-subtitle" class="text-[11px] text-purple-300 font-bold">Открыто 0 из 10 (2 плохие и 8 хороших)</div>
+          </div>
+        </div>
+        <button onclick="closeEndingsGalleryModal()" class="w-7 h-7 rounded-lg bg-white/10 text-slate-300 hover:text-white text-sm font-bold">✕</button>
+      </div>
+
+      <div id="endings-gallery-list" class="space-y-2 overflow-y-auto pr-1 flex-1">
+        <!-- Генерируется JS -->
+      </div>
+
+      <button onclick="openAuthorTelegramChannel()" class="w-full btn-game btn-tg py-2.5 rounded-xl text-xs font-black shrink-0">
+        📢 ТГК автора: t.me/kypi_za_rubl
+      </button>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: МИНИ-ИГРЫ -->
+  <div id="minigame-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#18152b] border border-white/15 rounded-2xl overflow-hidden shadow-2xl">
+      <div class="px-4 py-3 bg-[#120f22] border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="mg-icon" class="text-lg">🔌</span>
+          <h3 id="mg-title" class="text-sm font-extrabold text-white">Почини проводку</h3>
+        </div>
+        <button onclick="closeMiniGame()" class="w-7 h-7 rounded-lg bg-white/10 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div id="mg-body" class="p-4"></div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ТАЙНА 51-Й КВАРТИРЫ (ЗАГАДОЧНАЯ ЗАПИСКА С ПАСХАЛКОЙ) -->
+  <div id="mystery51-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-md mystery-letter rounded-2xl p-5 relative my-auto">
+      <div class="flex items-center justify-between border-b border-amber-900/30 pb-2.5 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🕯️</span>
+          <div>
+            <div class="text-[10px] font-black uppercase tracking-widest text-amber-900/80">АРХИВ БТИ • СОВ. СЕКРЕТНО • 1974 Г.</div>
+            <h3 class="font-handwriting text-2xl font-bold text-amber-950 leading-none">Конверт из квартиры № 51</h3>
+          </div>
+        </div>
+        <button onclick="closeMystery51Modal()" class="w-7 h-7 rounded-full bg-amber-950/15 hover:bg-amber-950/25 text-amber-950 font-bold text-sm flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="font-handwriting text-[20px] leading-snug text-[#261708] space-y-2.5">
+        <p>
+          «Если ты читаешь эти строки, значит старый лифт снова ожил и остановился между четвёртым и пятым этажами — там, где по бумагам сплошная кирпичная кладка...»
+        </p>
+        <p>
+          «В этом доме никогда не было 50 квартир. За шахтой лифта спрятана <b>Квартира № 51</b> — диспетчерская Нулевого Цикла. Баба Зина знала об этом с самого первого дня: под нашим двором заложен титановый фундамент, способный выдержать не пятиэтажку, а целый город в небо».
+        </p>
+        <div class="bg-amber-950/10 border-l-4 border-amber-800 p-2.5 rounded-r-lg text-[19px]">
+          <b>P.S. (Пасхалка для хранителя дома):</b><br/>
+          <i>«Не думай, что на пятидесятом жильце история оборвётся. Это лишь первая глава! Чертежи 1974 года открывают надстройку до <b>14 этажей</b> и расширение вширь на <b>1 300 жильцов</b>. Подъезд Бабы Зины только начинает расти...»</i>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-amber-900/25 flex flex-col gap-2">
+        <button onclick="unlockPhaseTwoFromMystery()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-800 to-amber-950 text-amber-100 font-extrabold text-xs tracking-wide shadow-lg active:scale-95 transition">
+          🏗️ Активировать чертежи: Расширить дом до 1 300 жильцов!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ПОКУПКА ЗА TELEGRAM STARS (ВКЛЮЧАЯ ПОСТОЯННЫЕ СКОРОСТИ 5x И 10x) -->
+  <div id="stars-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#18152b] border border-amber-400/40 rounded-2xl p-4 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⭐</span>
+          <h3 class="text-base font-extrabold text-amber-300">Telegram Stars — Баба Зина</h3>
+        </div>
+        <button onclick="closeStarsModal()" class="w-7 h-7 rounded-lg bg-white/10 text-slate-300 hover:text-white text-sm font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Ваш баланс: <b id="modal-stars-balance" class="text-amber-300">50 ⭐</b>. Выберите постоянное ускорение времени (5x или 10x навсегда) или мгновенную помощь подъезду:
+      </p>
+
+      <div class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+        <button id="modal-btn-speed5" onclick="purchasePermanentSpeed(5)" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-amber-400/40 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-extrabold text-amber-300">⏩ Ускорение времени 5x (НАВСЕГДА)</div>
+            <div class="text-[11px] text-slate-400">Игровой день за 1 минуту вместо 5 минут</div>
+          </div>
+          <span id="modal-tag-speed5" class="text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-lg shrink-0">5 ⭐</span>
+        </button>
+
+        <button id="modal-btn-speed10" onclick="purchasePermanentSpeed(10)" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-amber-400/40 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-extrabold text-amber-300">🚀 Ускорение времени 10x (НАВСЕГДА)</div>
+            <div class="text-[11px] text-slate-400">Игровой день за 30 секунд! Максимум динамики</div>
+          </div>
+          <span id="modal-tag-speed10" class="text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-lg shrink-0">10 ⭐</span>
+        </button>
+
+        <button onclick="buyStarFeature('speedup')" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-white/10 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-bold text-white">⚡ Ускорить бригаду</div>
+            <div class="text-[11px] text-slate-400">Завершить текущую стройку и ремонты</div>
+          </div>
+          <span class="text-xs font-black text-amber-300 bg-amber-400/15 px-2.5 py-1 rounded-lg shrink-0">5 ⭐</span>
+        </button>
+
+        <button onclick="buyStarFeature('recipe')" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-white/10 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-bold text-white">🥟 Секретный рецепт пирожков</div>
+            <div class="text-[11px] text-slate-400">Доход пирожков x2 навсегда + партия</div>
+          </div>
+          <span class="text-xs font-black text-amber-300 bg-amber-400/15 px-2.5 py-1 rounded-lg shrink-0">6 ⭐</span>
+        </button>
+
+        <button onclick="buyStarFeature('mass_repair')" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-white/10 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-bold text-white">🛠️ Массовый ремонт крыла</div>
+            <div class="text-[11px] text-slate-400">Сразу отремонтировать 5 квартир</div>
+          </div>
+          <span class="text-xs font-black text-amber-300 bg-amber-400/15 px-2.5 py-1 rounded-lg shrink-0">7 ⭐</span>
+        </button>
+
+        <button onclick="buyStarFeature('postpone')" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-white/10 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-bold text-white">📅 Отсрочка по налогам +30 дн.</div>
+            <div class="text-[11px] text-slate-400">Добавить целый месяц к сроку</div>
+          </div>
+          <span class="text-xs font-black text-amber-300 bg-amber-400/15 px-2.5 py-1 rounded-lg shrink-0">8 ⭐</span>
+        </button>
+
+        <button onclick="buyStarFeature('crane')" class="w-full p-3 rounded-xl bg-[#120f22] hover:bg-[#1e1a36] border border-amber-400/40 flex items-center justify-between text-left active:scale-95 transition">
+          <div>
+            <div class="text-xs font-bold text-amber-300">🏗️ Промышленный кран и бетон</div>
+            <div class="text-[11px] text-slate-400">+500 000 ₽ или мгновенный этаж Мега-Дома</div>
+          </div>
+          <span class="text-xs font-black text-slate-950 bg-amber-400 px-2.5 py-1 rounded-lg shrink-0">10 ⭐</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ИНСТРУКТАЖ -->
+  <div id="briefing-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#18152b] border border-white/15 rounded-2xl p-5 shadow-2xl space-y-3">
+      <div class="flex items-center gap-2.5">
+        <span class="text-2xl">👵</span>
+        <h3 id="briefing-title" class="text-base font-extrabold text-white">ПОДЪЕЗД — БАБЫ ЗИНЫ</h3>
+      </div>
+      <div id="briefing-body" class="text-xs text-slate-300 space-y-2 leading-relaxed">
+        <p>• Один игровой день на скорости <b>1x</b> длится ровно <b>5 минут</b> (05:00). Бесплатно доступно ускорение <b>1.5x</b>, а за звёзды можно навсегда открыть <b>5x (5 ⭐)</b> и <b>10x (10 ⭐)</b>.</p>
+        <p>• Ремонтируйте квартиры, чтобы заселять жильцов и собирать квартплату. Не допускайте банкротства и истечения срока!</p>
+        <p>• Почините лифт, чтобы заселить 4–5 этажи и раскрыть тайну <b>Квартиры № 51</b>, открывающую рост дома до <b>14 этажей</b> и <b>1 300 жильцов</b>.</p>
+        <p>• В игре спрятаны <b>10 концовок (2 плохие и 8 хороших)</b>. Попробуйте открыть их все!</p>
+      </div>
+      <button onclick="closeBriefingModal()" class="w-full btn-game btn-gold py-2.5 rounded-xl text-xs font-black">Понятно, за дело!</button>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. ИНТЕГРАЦИЯ TELEGRAM MINI APP SDK И ССЫЛКА НА ТГК
+    // =========================================================================
+    const AUTHOR_TG_URL = 'https://t.me/kypi_za_rubl';
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      if (tg.setHeaderColor) tg.setHeaderColor('#120f22');
+      if (tg.setBackgroundColor) tg.setBackgroundColor('#0f0d1c');
+    }
+
+    function openAuthorTelegramChannel() {
+      playSfx('click');
+      triggerHaptic('light');
+      try {
+        if (tg && typeof tg.openTelegramLink === 'function') {
+          tg.openTelegramLink(AUTHOR_TG_URL);
+          return;
+        }
+      } catch (e) {}
+      window.open(AUTHOR_TG_URL, '_blank', 'noopener,noreferrer');
+    }
+
+    function triggerHaptic(type = 'light') {
+      try {
+        if (tg && tg.HapticFeedback) {
+          if (type === 'success' || type === 'warning' || type === 'error') {
+            tg.HapticFeedback.notificationOccurred(type);
+          } else {
+            tg.HapticFeedback.impactOccurred(type);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 2. ЗВУКОВОЙ ДВИЖОК (WEB AUDIO API)
+    // =========================================================================
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function playTone(freq, duration = 0.12, type = 'sine', vol = 0.08, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function playSfx(name) {
+      if (!soundEnabled) return;
+      if (name === 'coin') {
+        playTone(880, 0.1, 'triangle', 0.1, 0);
+        playTone(1318, 0.18, 'triangle', 0.1, 0.08);
+      } else if (name === 'hammer') {
+        playTone(160, 0.09, 'square', 0.1, 0);
+        playTone(220, 0.11, 'triangle', 0.09, 0.07);
+      } else if (name === 'upgrade') {
+        playTone(440, 0.12, 'sine', 0.1, 0);
+        playTone(554, 0.12, 'sine', 0.1, 0.09);
+        playTone(659, 0.22, 'sine', 0.12, 0.18);
+      } else if (name === 'mystery') {
+        playTone(329.6, 0.35, 'sine', 0.09, 0);
+        playTone(392.0, 0.35, 'sine', 0.09, 0.18);
+        playTone(493.8, 0.55, 'triangle', 0.1, 0.36);
+      } else if (name === 'bad') {
+        playTone(220, 0.25, 'sawtooth', 0.09, 0);
+        playTone(185, 0.35, 'sawtooth', 0.09, 0.2);
+        playTone(146, 0.5, 'sawtooth', 0.1, 0.42);
+      } else if (name === 'click') {
+        playTone(520, 0.05, 'sine', 0.05, 0);
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+      triggerHaptic('light');
+    }
+
+    // =========================================================================
+    // 3. СИСТЕМА 10 КОНЦОВОК (2 ПЛОХИЕ И 8 ХОРОШИХ) + ПОСТОЯННЫЙ ПРОГРЕСС
+    // =========================================================================
+    const ENDINGS_STORAGE_KEY = 'podezd_endings_unlocked_v1';
+
+    const ENDINGS_DEF = [
+      // 2 ПЛОХИЕ КОНЦОВКИ
+      {
+        id: 'BAD_DEADLINE',
+        kind: 'bad',
+        numInKind: 1,
+        icon: '🚧',
+        title: 'Снос под торговый центр',
+        subtitle: 'Плохая концовка (1/2) • Вышел срок',
+        hint: 'Не успеть завершить восстановление дома до того, как выйдет срок (daysLeft ≤ 0).',
+        story: '«Время вышло, внучок... На рассвете во двор въехали бульдозеры застройщика под новый торговый центр. Мы не успели завершить восстановление дома в срок. Баба Зина вздохнула, собрала тетрадку в узелок и пошла искать новый двор...»'
+      },
+      {
+        id: 'BAD_DEFAULT',
+        kind: 'bad',
+        numInKind: 2,
+        icon: '💸',
+        title: 'Коммунальный дефолт',
+        subtitle: 'Плохая концовка (2/2) • Банкротство',
+        hint: 'Не хватило бюджета на оплату ежемесячной коммуналки или полное разорение без ресурсов.',
+        story: '«Эх, внучок... Не рассчитали мы смету. Настал день оплаты коммуналки, а в кассе пусто. Пришли судебные приставы из БТИ, опечатали подъезд и забрали даже последнюю сковородку для пирожков...»'
+      },
+      // 8 ХОРОШИХ КОНЦОВОК
+      {
+        id: 'GOOD_MYSTERY51',
+        kind: 'good',
+        numInKind: 1,
+        icon: '🕯️',
+        title: 'Хранитель Тайны 1974 года',
+        subtitle: 'Хорошая концовка (1/8) • Секрет 51-й квартиры',
+        hint: 'Прочитать конверт из 51-й квартиры и построить Мега-Дом на 1 300 жильцов.',
+        story: '«Ты не просто возвёл 14-этажный Мега-Дом на 1 300 жильцов — ты разгадал тайну чертежей 1974 года! В диспетчерской Квартиры № 51 снова горит зелёный индикатор Нулевого Цикла, а Баба Зина передала тебе золотые ключи от всего квартала!»'
+      },
+      {
+        id: 'GOOD_OLIGARCH',
+        kind: 'good',
+        numInKind: 2,
+        icon: '💰',
+        title: 'Олигарх ЖКХ',
+        subtitle: 'Хорошая концовка (2/8) • Капитал > 10 000 000 ₽',
+        hint: 'Завершить восстановление дома с бюджетом более 10 000 000 ₽.',
+        story: '«Все квартиры заселены, лифты летают бесшумно, а в кассе дома лежит больше 10 миллионов рублей! Тебя назначили главным реформатором ЖКХ страны, а наш подъезд стал эталоном финансовой грамотности!»'
+      },
+      {
+        id: 'GOOD_PIROZHKI_EMPIRE',
+        kind: 'good',
+        numInKind: 3,
+        icon: '🥟',
+        title: 'Империя Пирожков Бабы Зины',
+        subtitle: 'Хорошая концовка (3/8) • Кулинарный триумф',
+        hint: 'Купить секретный рецепт пирожков за звёзды и продать более 15 партий пирожков.',
+        story: '«Запах румяных пирожков с картошкой и капустой чувствуется на каждом этаже! На первом этаже открылся фирменный ресторанчик Бабы Зины, куда приезжают туристы со всей страны, а жильцы живут как в санатории!»'
+      },
+      {
+        id: 'GOOD_SPEEDRUNNER',
+        kind: 'good',
+        numInKind: 4,
+        icon: '⚡',
+        title: 'Спидраннер ЖЭКа',
+        subtitle: 'Хорошая концовка (4/8) • Быстрее 120 дней',
+        hint: 'Завершить полное восстановление дома менее чем за 120 игровых дней.',
+        story: '«Невероятная скорость! Меньше чем за 120 дней ты поднял дом из разрухи! Строительные бригады всего района теперь учатся по твоему графику, а Баба Зина едва успевает отмечать галочки в тетрадке!»'
+      },
+      {
+        id: 'GOOD_PEOPLES_MANAGER',
+        kind: 'good',
+        numInKind: 5,
+        icon: '🤝',
+        title: 'Народный Управдом',
+        subtitle: 'Хорошая концовка (5/8) • Забота о жильцах',
+        hint: 'Решить более 8 событий подъезда в пользу жильцов.',
+        story: '«Ты всегда вставал на сторону соседей! В каждом дворе ставят в пример твой подъезд: кот Барсик сыт, бабушки довольны, а жильцы называют тебя лучшим управдомом в истории города!»'
+      },
+      {
+        id: 'GOOD_JACK_OF_ALL_TRADES',
+        kind: 'good',
+        numInKind: 6,
+        icon: '🛠️',
+        title: 'Мастер на все руки',
+        subtitle: 'Хорошая концовка (6/8) • Герой мини-игр',
+        hint: 'Выиграть более 3 мини-игр (проводка, квартплата или пирожки).',
+        story: '«Ты и проводку сам скрутил, и квартплату на лету поймал, и противни с пирожками спас! Золотые руки управдома прославились на весь район, а дом сияет как новенький!»'
+      },
+      {
+        id: 'GOOD_STARS_PATRON',
+        kind: 'good',
+        numInKind: 7,
+        icon: '⭐',
+        title: 'Звёздный Меценат',
+        subtitle: 'Хорошая концовка (7/8) • Помощь Telegram Stars',
+        hint: 'Использовать помощь Telegram Stars для ускорения стройки.',
+        story: '«С неба на наш двор пролился настоящий звездопад! Благодаря звёздным технологиям стройка шла молниеносно, а над крышей подъезда теперь сияет неоновая звезда Бабы Зины!»'
+      },
+      {
+        id: 'GOOD_EXEMPLARY_ENTRANCE',
+        kind: 'good',
+        numInKind: 8,
+        icon: '🏠',
+        title: 'Образцовый Подъезд',
+        subtitle: 'Хорошая концовка (8/8) • Полное восстановление',
+        hint: 'Полностью отремонтировать и заселить дом.',
+        story: '«Вот и зажёгся свет в последнем окне! Из старой пятиэтажки с текущим стояком ты вырастил образцовый дом счастливых людей. Баба Зина обняла тебя у подъезда: "Спасибо, внучок, теперь я за наш дом спокойна!"»'
+      }
+    ];
+
+    function loadUnlockedEndings() {
+      try {
+        const raw = localStorage.getItem(ENDINGS_STORAGE_KEY);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) return arr;
+        }
+      } catch (e) {}
+      return [];
+    }
+
+    function saveUnlockedEndings(arr) {
+      try {
+        localStorage.setItem(ENDINGS_STORAGE_KEY, JSON.stringify(arr));
+      } catch (e) {}
+    }
+
+    let unlockedEndings = loadUnlockedEndings();
+
+    // =========================================================================
+    // 4. СОСТОЯНИЕ ИГРЫ (5 МИНУТ/ДЕНЬ, СКОРОСТИ 1x/1.5x/5x/10x, МЕГА-ДОМ 1300)
+    // =========================================================================
+    const SAVE_KEY = 'podezd_babi_ziny_save_v4';
+    const REAL_SECONDS_PER_DAY = 300; // Ровно 5 минут (300 секунд) на 1x!
+
+    const NOTEBOOK_UPGRADES_DEF = [
+      {
+        id: 'intercom',
+        num: 1,
+        icon: '🚪',
+        title: 'Дверь с домофоном',
+        cost: 600000,
+        days: 6,
+        desc: 'Домофон мёртв с 2000-го, зимой снег на лестнице',
+        coziness: 15,
+        rentBonus: 150,
+        zinaQuote: '«Вот теперь чужие по подъезду шастать не будут! И жильцам спокойнее.»'
+      },
+      {
+        id: 'water',
+        num: 2,
+        icon: '💧',
+        title: 'Вода: новый стояк',
+        cost: 700000,
+        days: 9,
+        desc: 'Стояк течёт на всех пяти этажах',
+        coziness: 20,
+        rentBonus: 200,
+        zinaQuote: '«Напор такой, что хоть на пятом этаже душ принимай! Аренда подросла.»'
+      },
+      {
+        id: 'roof',
+        num: 3,
+        icon: '🏠',
+        title: 'Крыша',
+        cost: 500000,
+        days: 7,
+        desc: 'В дождь вода идёт по ступеням',
+        coziness: 20,
+        rentBonus: 150,
+        zinaQuote: '«Крышу залатали на совесть, больше никаких тазиков на чердаке!»'
+      },
+      {
+        id: 'wiring',
+        num: 4,
+        icon: '💡',
+        title: 'Проводка и свет',
+        badge: 'ВЫБОР ЗРИТЕЛЕЙ',
+        cost: 300000,
+        days: 10,
+        desc: 'Лампочки не горят. В темноте жильцы съезжают',
+        coziness: 20,
+        rentBonus: 200,
+        zinaQuote: '«Светло как днём! И проводка теперь выдержит даже стиральные машинки.»'
+      },
+      {
+        id: 'elevator',
+        num: 5,
+        icon: '🛗',
+        title: 'Лифт',
+        cost: 1000000,
+        days: 25,
+        desc: 'Стоит с 98-го. С лифтом аренда +50%, без него на 4–5 этажи никто не заедет',
+        coziness: 25,
+        rentBonus: 400,
+        zinaQuote: '«Лифт поехал! Слышишь, как гудит? Теперь можно заселять 4 и 5 этажи... И проверь конверт в кабине!»'
+      }
+    ];
+
+    const MEGA_UPGRADES_DEF = [
+      {
+        id: 'add_floor',
+        icon: '🏢',
+        title: 'Надстроить новый этаж (+1 ярус)',
+        desc: 'Возводит дополнительный этаж с квартирами по всей ширине дома (до 14 этажей)',
+        baseCost: 850000,
+        costMult: 1.25
+      },
+      {
+        id: 'add_wing',
+        icon: '🏗️',
+        title: 'Расширить дом вширь (+новый корпус)',
+        desc: 'Пристраивает широкое крыло на все этажи! Доводит вместимость до 1 300 жильцов',
+        baseCost: 1400000,
+        costMult: 1.65
+      }
+    ];
+
+    const GOALS_DEF = [
+      { id: 'g1', title: 'Первые шаги', desc: 'Заселить 5 жильцов', target: 5, type: 'tenants', reward: 150000 },
+      { id: 'g2', title: 'Свет и тепло', desc: 'Выполнить 3 улучшения из Тетрадки Бабы Зины', target: 3, type: 'upgrades', reward: 250000 },
+      { id: 'g3', title: 'Покоритель высот', desc: 'Запустить лифт и заселить 25 жильцов', target: 25, type: 'tenants', reward: 400000 },
+      { id: 'g4', title: 'Тайна № 51', desc: 'Раскрыть секрет 51-й квартиры и открыть Фазу II', target: 1, type: 'mystery', reward: 600000 },
+      { id: 'g5', title: 'Районный масштаб', desc: 'Заселить 250 жильцов в Мега-Доме', target: 250, type: 'tenants', reward: 1500000 },
+      { id: 'g6', title: 'Легенда Бабы Зины', desc: 'Заселить 1 300 жильцов на 14 этажах!', target: 1300, type: 'tenants', reward: 5000000 }
+    ];
+
+    function generateApartments(totalCount) {
+      const list = [];
+      const interiorThemes = ['warm', 'emerald', 'lavender', 'peach', 'sky'];
+      for (let i = 0; i < totalCount; i++) {
+        list.push({
+          id: i + 1,
+          state: i === 0 ? 'occupied' : 'ruined',
+          repairDaysLeft: 0,
+          interiorTheme: interiorThemes[i % interiorThemes.length],
+          hasCat: i % 4 === 1,
+          hasTv: i % 3 === 0,
+          hasBooks: i % 2 === 0
+        });
+      }
+      return list;
+    }
+
+    function createDefaultState() {
+      return {
+        day: 0,
+        daysLeft: 365,
+        dayProgress: 0, // 0..1
+        speed: 1,
+        unlockedSpeed5: false,  // Покупается навсегда за 5 ⭐
+        unlockedSpeed10: false, // Покупается навсегда за 10 ⭐
+        starsBalance: 50,
+        starsSpentCount: 0,
+        budget: 3000000,
+        energy: 100,
+        maxEnergy: 100,
+        uncollectedRent: 0,
+        totalCollected: 0,
+        movedIn: 1,
+        movedOut: 0,
+        pirozhkiSoldCount: 0,
+        pirozhkiDoubleForever: false,
+        kindChoicesCount: 0,
+        miniGamesWonCount: 0,
+        randomEventCooldown: 55, // Секунды реального времени до следующего рандомного события
+        lastEventTitle: '',
+        completedUpgrades: [],
+        activeConstruction: null,
+        mysteryUnlocked: false,
+        mysteryRead: false,
+        phaseTwoActive: false,
+        floorsCount: 5,
+        wingsCount: 1,
+        activeMegaSection: 0,
+        apartments: generateApartments(50),
+        events: [
+          {
+            id: 'welcome',
+            title: 'Заселение в первый подъезд',
+            text: 'Баба Зина встретила вас у входа: «Внучок, дом крепкий, но запущенный. Загляни в мою тетрадку!»',
+            resolved: true,
+            choiceText: 'Принято!'
+          }
+        ],
+        claimedGoals: [],
+        phaseTwoAnnounced: false,
+        gameEnded: false,
+        triggeredEndingId: null
+      };
+    }
+
+    let state = loadState();
+    let activeTab = 'notebook';
+    let lastTickTime = performance.now();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const def = createDefaultState();
+          return Object.assign(def, parsed);
+        }
+      } catch (e) {}
+      return createDefaultState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 5. ВЫЧИСЛЯЕМЫЕ ПАРАМЕТРЫ ЭКОНОМИКИ И ВМЕСТИМОСТИ ДО 1 300 ЖИЛЬЦОВ
+    // =========================================================================
+    function formatMoney(num) {
+      const sign = num < 0 ? '-' : '';
+      return sign + Math.floor(Math.abs(num)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    function formatCountdown(secondsLeft) {
+      const s = Math.max(0, Math.ceil(secondsLeft));
+      const mins = Math.floor(s / 60);
+      const secs = s % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function hasElevator() {
+      return state.completedUpgrades.includes('elevator');
+    }
+
+    function getCoziness() {
+      let c = 0;
+      NOTEBOOK_UPGRADES_DEF.forEach(u => {
+        if (state.completedUpgrades.includes(u.id)) c += u.coziness;
+      });
+      if (state.phaseTwoActive) {
+        c = Math.min(100, c + (state.floorsCount - 5) * 2 + (state.wingsCount - 1) * 5);
+      }
+      return Math.min(100, c);
+    }
+
+    function getOccupiedCount() {
+      return state.apartments.filter(a => a.state === 'occupied').length;
+    }
+
+    function getMaxCapacity() {
+      if (!state.phaseTwoActive) return 50;
+      if (state.floorsCount >= 14 && state.wingsCount >= 3) return 1300;
+      return state.apartments.length;
+    }
+
+    function getRentPerApartment() {
+      let base = 500;
+      NOTEBOOK_UPGRADES_DEF.forEach(u => {
+        if (state.completedUpgrades.includes(u.id)) base += u.rentBonus;
+      });
+      if (hasElevator()) base = Math.round(base * 1.5);
+      if (state.phaseTwoActive) base += (state.floorsCount - 5) * 120 + (state.wingsCount - 1) * 250;
+      return base;
+    }
+
+    function getRepairCost() {
+      const occ = getOccupiedCount();
+      if (occ >= 200) return 150000;
+      if (occ >= 50) return 110000;
+      return occ >= 10 ? 80000 : 60000;
+    }
+
+    function getPirozhkiReward() {
+      const occ = getOccupiedCount();
+      let base = occ >= 10 ? 14000 : 8000;
+      if (occ >= 50) base = 28000;
+      if (state.pirozhkiDoubleForever) base *= 2;
+      return base;
+    }
+
+    // =========================================================================
+    // 6. ЛОГИКА ОПРЕДЕЛЕНИЯ И ПОКАЗА КОНЦОВОК
+    // =========================================================================
+    function isPhaseOneComplete() {
+      const allNotebookDone = NOTEBOOK_UPGRADES_DEF.every(u => state.completedUpgrades.includes(u.id));
+      return allNotebookDone && getOccupiedCount() >= 50 && !state.activeConstruction;
+    }
+
+    function isMegaHouseComplete() {
+      const allNotebookDone = NOTEBOOK_UPGRADES_DEF.every(u => state.completedUpgrades.includes(u.id));
+      return (
+        state.phaseTwoActive &&
+        allNotebookDone &&
+        state.floorsCount >= 14 &&
+        state.wingsCount >= 3 &&
+        getOccupiedCount() >= 1300 &&
+        !state.activeConstruction
+      );
+    }
+
+    function determineGoodEndingId() {
+      const occ = getOccupiedCount();
+
+      // Приоритетная проверка 8 хороших концовок
+      if (state.mysteryRead && state.phaseTwoActive && occ >= 1300) {
+        return 'GOOD_MYSTERY51';
+      }
+      if (state.budget > 10000000) {
+        return 'GOOD_OLIGARCH';
+      }
+      if (state.pirozhkiDoubleForever && (state.pirozhkiSoldCount || 0) > 15) {
+        return 'GOOD_PIROZHKI_EMPIRE';
+      }
+      if (state.day < 120) {
+        return 'GOOD_SPEEDRUNNER';
+      }
+      if ((state.kindChoicesCount || 0) > 8) {
+        return 'GOOD_PEOPLES_MANAGER';
+      }
+      if ((state.miniGamesWonCount || 0) > 3) {
+        return 'GOOD_JACK_OF_ALL_TRADES';
+      }
+      if ((state.starsSpentCount || 0) > 0 || state.unlockedSpeed5 || state.unlockedSpeed10) {
+        return 'GOOD_STARS_PATRON';
+      }
+      return 'GOOD_EXEMPLARY_ENTRANCE';
+    }
+
+    function triggerEnding(endingId) {
+      const ending = ENDINGS_DEF.find(e => e.id === endingId) || ENDINGS_DEF[ENDINGS_DEF.length - 1];
+      state.gameEnded = true;
+      state.triggeredEndingId = ending.id;
+
+      if (!unlockedEndings.includes(ending.id)) {
+        unlockedEndings.push(ending.id);
+        saveUnlockedEndings(unlockedEndings);
+      }
+
+      saveState();
+      updateUI();
+      showEndingModal(ending);
+
+      if (ending.kind === 'bad') {
+        playSfx('bad');
+        triggerHaptic('error');
+      } else {
+        playSfx('upgrade');
+        triggerHaptic('success');
+      }
+    }
+
+    function showEndingModal(ending) {
+      if (!ending) return;
+      const badge = document.getElementById('ending-type-badge');
+      const card = document.getElementById('ending-card-container');
+      const iconBox = document.getElementById('ending-icon');
+
+      if (ending.kind === 'bad') {
+        badge.textContent = `ПЛОХАЯ КОНЦОВКА (${ending.numInKind} из 2)`;
+        badge.className = 'text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-rose-500/25 border border-rose-400/50 text-rose-200';
+        card.className = 'w-full max-w-md bg-gradient-to-b from-[#2c121b] via-[#18152b] to-[#120f22] border-2 border-rose-500/60 rounded-3xl p-4.5 shadow-[0_0_60px_rgba(244,63,94,0.3)] space-y-3 my-auto relative';
+        iconBox.className = 'w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-400/50 flex items-center justify-center text-3xl shrink-0 shadow-inner';
+      } else {
+        badge.textContent = `ХОРОШАЯ КОНЦОВКА (${ending.numInKind} из 8)`;
+        badge.className = 'text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-emerald-200';
+        card.className = 'w-full max-w-md bg-gradient-to-b from-[#231942] via-[#18152b] to-[#120f22] border-2 border-amber-400/60 rounded-3xl p-4.5 shadow-[0_0_60px_rgba(251,191,36,0.3)] space-y-3 my-auto relative';
+        iconBox.className = 'w-14 h-14 rounded-2xl bg-amber-400/20 border border-amber-400/50 flex items-center justify-center text-3xl shrink-0 shadow-inner';
+      }
+
+      iconBox.textContent = ending.icon;
+      document.getElementById('ending-title').textContent = ending.title;
+      document.getElementById('ending-subtitle').textContent = ending.subtitle;
+      document.getElementById('ending-story').textContent = ending.story;
+
+      document.getElementById('ending-stat-days').textContent = `${state.day} дн.`;
+      document.getElementById('ending-stat-tenants').textContent = `${getOccupiedCount()}`;
+      document.getElementById('ending-stat-budget').textContent = `${formatMoney(state.budget)} ₽`;
+
+      document.getElementById('ending-unlocked-counter').textContent = `Открыто ${unlockedEndings.length} / 10`;
+
+      const miniList = document.getElementById('ending-mini-list');
+      if (miniList) {
+        miniList.innerHTML = ENDINGS_DEF.map(e => {
+          const isOpen = unlockedEndings.includes(e.id);
+          return `
+            <div class="px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 truncate ${isOpen ? 'bg-purple-500/25 text-purple-100 border border-purple-400/30' : 'bg-black/30 text-slate-500 border border-white/5'}">
+              <span>${isOpen ? e.icon : '🔒'}</span>
+              <span class="truncate">${isOpen ? e.title : (e.kind === 'bad' ? 'Плохая #' + e.numInKind : 'Хорошая #' + e.numInKind)}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('ending-modal').classList.remove('hidden');
+    }
+
+    function closeEndingModal() {
+      document.getElementById('ending-modal').classList.add('hidden');
+    }
+
+    function reopenLastEndingModal() {
+      const ending = ENDINGS_DEF.find(e => e.id === state.triggeredEndingId) || ENDINGS_DEF[ENDINGS_DEF.length - 1];
+      showEndingModal(ending);
+    }
+
+    function restartFromEnding() {
+      closeEndingModal();
+      confirmResetGame();
+    }
+
+    function checkGameCompletion(justFailedUtility = false) {
+      if (state.gameEnded) return;
+      const occ = getOccupiedCount();
+
+      // 1. Плохая концовка №2: Коммунальный дефолт
+      if (
+        justFailedUtility ||
+        state.budget < -200000 ||
+        (state.budget < 15000 && state.energy < 10 && state.uncollectedRent <= 0 && occ === 0)
+      ) {
+        triggerEnding('BAD_DEFAULT');
+        return;
+      }
+
+      // 2. Плохая концовка №1: Снос под торговый центр (вышел срок до завершения)
+      if (state.daysLeft <= 0 && !isPhaseOneComplete() && !isMegaHouseComplete()) {
+        triggerEnding('BAD_DEADLINE');
+        return;
+      }
+
+      // 3. Автоматический финал при полном завершении Мега-Дома (14 этажей, 3 корпуса, 1300 жильцов, все 5 улучшений)
+      if (isMegaHouseComplete()) {
+        triggerEnding(determineGoodEndingId());
+        return;
+      }
+
+      // 4. Автоматический финал при полном завершении Фазы I, если игрок не открывал Фазу II
+      // или если срок вышел при уже выполненной Фазе I
+      if (isPhaseOneComplete() && (!state.phaseTwoActive || state.daysLeft <= 0)) {
+        triggerEnding(determineGoodEndingId());
+        return;
+      }
+    }
+
+    function handleBannerFinalAction() {
+      if (state.gameEnded) {
+        reopenLastEndingModal();
+        return;
+      }
+      if (isMegaHouseComplete() || isPhaseOneComplete()) {
+        triggerEnding(determineGoodEndingId());
+      } else {
+        checkAndTriggerFinalManual();
+      }
+    }
+
+    function checkAndTriggerFinalManual() {
+      if (state.gameEnded) {
+        reopenLastEndingModal();
+        return;
+      }
+      if (isMegaHouseComplete() || isPhaseOneComplete()) {
+        triggerEnding(determineGoodEndingId());
+        return;
+      }
+      if (state.daysLeft <= 0) {
+        triggerEnding('BAD_DEADLINE');
+        return;
+      }
+      if (state.budget < -200000) {
+        triggerEnding('BAD_DEFAULT');
+        return;
+      }
+      const occ = getOccupiedCount();
+      showZinaBubble(`«Чтобы подвести итоги, выполни все 5 пунктов тетрадки и засели все квартиры (сейчас ${occ}/${getMaxCapacity()}).»`);
+      triggerHaptic('warning');
+    }
+
+    function openEndingsGalleryModal() {
+      document.getElementById('gallery-subtitle').textContent = `Открыто ${unlockedEndings.length} из 10 (2 плохие и 8 хороших)`;
+      const list = document.getElementById('endings-gallery-list');
+      list.innerHTML = ENDINGS_DEF.map(e => {
+        const isOpen = unlockedEndings.includes(e.id);
+        const typeLabel = e.kind === 'bad'
+          ? `<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">ПЛОХАЯ #${e.numInKind}</span>`
+          : `<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">ХОРОШАЯ #${e.numInKind}</span>`;
+
+        return `
+          <div class="bg-[#120f22] border ${isOpen ? 'border-purple-400/40' : 'border-white/10'} rounded-xl p-2.5 flex items-start gap-2.5">
+            <div class="w-9 h-9 rounded-xl ${isOpen ? 'bg-purple-500/20 border-purple-400/40' : 'bg-white/5 border-white/10'} border flex items-center justify-center text-lg shrink-0">
+              ${isOpen ? e.icon : '🔒'}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                <span class="text-xs font-extrabold ${isOpen ? 'text-white' : 'text-slate-400'}">${isOpen ? e.title : 'Скрытая концовка'}</span>
+                ${typeLabel}
+              </div>
+              <p class="text-[10.5px] text-slate-400 mt-0.5 leading-snug">
+                ${isOpen ? e.story : 'Условие: ' + e.hint}
+              </p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('endings-gallery-modal').classList.remove('hidden');
+      playSfx('click');
+    }
+
+    function closeEndingsGalleryModal() {
+      document.getElementById('endings-gallery-modal').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // 7. ПЕРЕКЛЮЧЕНИЕ СКОРОСТИ (1x | 1.5x | 5x [5⭐] | 10x [10⭐])
+    // =========================================================================
+    function selectSpeed(targetSpeed) {
+      if (targetSpeed === 5 && !state.unlockedSpeed5) {
+        purchasePermanentSpeed(5);
+        return;
+      }
+      if (targetSpeed === 10 && !state.unlockedSpeed10) {
+        purchasePermanentSpeed(10);
+        return;
+      }
+      state.speed = targetSpeed;
+      playSfx('click');
+      triggerHaptic('light');
+      saveState();
+      updateUI();
+    }
+
+    function processTelegramStarsPayment(starsPrice, title, onSuccess) {
+      if (tg && typeof tg.openInvoice === 'function' && window.TELEGRAM_STARS_INVOICE_URL) {
+        tg.openInvoice(window.TELEGRAM_STARS_INVOICE_URL, (status) => {
+          if (status === 'paid') {
+            onSuccess();
+          }
+        });
+        return;
+      }
+
+      if (state.starsBalance < starsPrice) {
+        state.starsBalance += 25;
+        showFloatingToast(`+25 ⭐ пополнено для теста!`, '#fde047');
+      }
+      state.starsBalance -= starsPrice;
+      state.starsSpentCount = (state.starsSpentCount || 0) + 1;
+      onSuccess();
+    }
+
+    function purchasePermanentSpeed(speedVal) {
+      const price = speedVal === 5 ? 5 : 10;
+      const already = speedVal === 5 ? state.unlockedSpeed5 : state.unlockedSpeed10;
+
+      if (already) {
+        state.speed = speedVal;
+        updateUI();
+        return;
+      }
+
+      processTelegramStarsPayment(price, `Скорость ${speedVal}x навсегда`, () => {
+        if (speedVal === 5) state.unlockedSpeed5 = true;
+        if (speedVal === 10) state.unlockedSpeed10 = true;
+        state.speed = speedVal;
+        playSfx('upgrade');
+        triggerHaptic('success');
+        showZinaBubble(`«Ого! Теперь время в нашем подъезде летит на скорости ${speedVal}x — и это навсегда!»`);
+        showFloatingToast(`⚡ Скорость ${speedVal}x открыта навсегда!`, '#fde047');
+        closeStarsModal();
+        saveState();
+        updateUI();
+      });
+    }
+
+    // =========================================================================
+    // 8. ИГРОВЫЕ ДЕЙСТВИЯ, ТАЙНА 51 КВАРТИРЫ И МЕГА-ДОМ ДО 1300 ЖИЛЬЦОВ
+    // =========================================================================
+    function collectRent() {
+      if (state.uncollectedRent <= 0) {
+        showZinaBubble('«Пока касса пуста, внучок. Подожди немного или засели больше жильцов!»');
+        triggerHaptic('warning');
+        return;
+      }
+      const amount = state.uncollectedRent;
+      state.budget += amount;
+      state.totalCollected += amount;
+      state.uncollectedRent = 0;
+      playSfx('coin');
+      triggerHaptic('success');
+      showFloatingToast(`+${formatMoney(amount)} ₽`, '#34d399');
+      saveState();
+      updateUI();
+    }
+
+    function canOccupyApartment(aptIndex) {
+      if (hasElevator()) return true;
+      const floor = Math.floor(aptIndex / 10);
+      return floor < 3;
+    }
+
+    function repairApartmentByIndex(idx) {
+      const apt = state.apartments[idx];
+      if (!apt) return;
+
+      if (apt.state !== 'ruined') {
+        if (apt.state === 'occupied') {
+          showZinaBubble(`«В квартире №${apt.id} уже живут жильцы. У них уютно и горит свет!»`);
+        } else if (apt.state === 'repairing') {
+          showZinaBubble(`«В квартире №${apt.id} уже стучат молотки. Осталось ${apt.repairDaysLeft} дн.»`);
+        }
+        return;
+      }
+
+      if (!canOccupyApartment(idx)) {
+        showZinaBubble('«На 4 и 5 этажи без лифта никто не поднимется! Сначала почини лифт в тетрадке.»');
+        triggerHaptic('error');
+        return;
+      }
+
+      const cost = getRepairCost();
+      if (state.budget < cost) {
+        showZinaBubble(`«На ремонт нужно ${formatMoney(cost)} ₽. Продай пирожки или сыграй в мини-игру!»`);
+        triggerHaptic('error');
+        return;
+      }
+
+      state.budget -= cost;
+      apt.state = 'repairing';
+      apt.repairDaysLeft = 2;
+      playSfx('hammer');
+      triggerHaptic('medium');
+      showFloatingToast(`-${formatMoney(cost)} ₽ (Кв. №${apt.id})`, '#fbbf24');
+      saveState();
+      updateUI();
+      checkGameCompletion(false);
+    }
+
+    function repairRandomApartment() {
+      const idx = state.apartments.findIndex((a, i) => a.state === 'ruined' && canOccupyApartment(i));
+      if (idx === -1) {
+        if (!hasElevator() && state.apartments.some(a => a.state === 'ruined')) {
+          showZinaBubble('«Нижние 3 этажа уже готовы! Почини лифт в тетрадке, чтобы открыть 4 и 5 этажи.»');
+        } else if (state.phaseTwoActive && state.floorsCount < 14) {
+          showZinaBubble('«Все текущие квартиры готовы! Надстрой новый этаж или корпус в Тетрадке Бабы Зины!»');
+        } else {
+          showZinaBubble('«Все доступные квартиры уже отремонтированы!»');
+        }
+        triggerHaptic('warning');
+        return;
+      }
+      repairApartmentByIndex(idx);
+    }
+
+    function sellPirozhki() {
+      if (state.energy < 10) {
+        showZinaBubble('«Руки устали тесто месить... Отдохни немного или сыграй в мини-игру "Пирожки"!»');
+        triggerHaptic('error');
+        return;
+      }
+      state.energy -= 10;
+      state.pirozhkiSoldCount = (state.pirozhkiSoldCount || 0) + 1;
+      const reward = getPirozhkiReward();
+      state.budget += reward;
+      playSfx('coin');
+      triggerHaptic('light');
+      showFloatingToast(`+${formatMoney(reward)} ₽ 🥟`, '#fb923c');
+      saveState();
+      updateUI();
+    }
+
+    function startNotebookUpgrade(upgradeId) {
+      if (state.activeConstruction) {
+        showZinaBubble('«Бригада уже занята! Подожди завершения или ускорь за 5 ⭐.»');
+        triggerHaptic('warning');
+        return;
+      }
+      const def = NOTEBOOK_UPGRADES_DEF.find(u => u.id === upgradeId);
+      if (!def || state.completedUpgrades.includes(upgradeId)) return;
+
+      if (state.budget < def.cost) {
+        showZinaBubble(`«Не хватает денег на "${def.title}". Нужно ${formatMoney(def.cost)} ₽.»`);
+        triggerHaptic('error');
+        return;
+      }
+
+      state.budget -= def.cost;
+      state.activeConstruction = {
+        id: def.id,
+        title: def.title,
+        daysLeft: def.days,
+        totalDays: def.days,
+        isMega: false
+      };
+      playSfx('hammer');
+      triggerHaptic('medium');
+      showFloatingToast(`Стройка: ${def.title}`, '#fde047');
+      saveState();
+      updateUI();
+    }
+
+    function getMegaFloorCost() {
+      return Math.round(850000 * Math.pow(1.22, Math.max(0, state.floorsCount - 5)));
+    }
+
+    function getMegaWingCost() {
+      return Math.round(1400000 * Math.pow(1.6, Math.max(0, state.wingsCount - 1)));
+    }
+
+    function buildMegaExpansion(type) {
+      if (!state.phaseTwoActive) {
+        showZinaBubble('«Сначала открой чертежи 1974 года из конверта № 51!»');
+        triggerHaptic('warning');
+        return;
+      }
+
+      if (state.activeConstruction) {
+        showZinaBubble(`«Строительный кран сейчас занят: "${state.activeConstruction.title}" (осталось ${state.activeConstruction.daysLeft} дн.)!»`);
+        triggerHaptic('warning');
+        return;
+      }
+
+      if (type === 'add_floor') {
+        if (state.floorsCount >= 14) {
+          showZinaBubble('«Достигнута максимальная высота по чертежам 1974 года — 14 этажей!»');
+          return;
+        }
+        const cost = getMegaFloorCost();
+        if (state.budget < cost) {
+          showZinaBubble(`«На надстройку ${state.floorsCount + 1}-го этажа нужно ${formatMoney(cost)} ₽ (у вас ${formatMoney(state.budget)} ₽).»`);
+          triggerHaptic('error');
+          return;
+        }
+        state.budget -= cost;
+        state.activeConstruction = {
+          id: 'add_floor',
+          title: `Надстройка ${state.floorsCount + 1}-го этажа`,
+          daysLeft: 4,
+          totalDays: 4,
+          isMega: true
+        };
+        showFloatingToast(`-${formatMoney(cost)} ₽ • Строим ${state.floorsCount + 1}-й этаж!`, '#fde047');
+      } else if (type === 'add_wing') {
+        if (state.wingsCount >= 3) {
+          showZinaBubble('«Все 3 широких корпуса уже возведены!»');
+          return;
+        }
+        const cost = getMegaWingCost();
+        if (state.budget < cost) {
+          showZinaBubble(`«На пристройку Корпуса №${state.wingsCount + 1} нужно ${formatMoney(cost)} ₽ (у вас ${formatMoney(state.budget)} ₽).»`);
+          triggerHaptic('error');
+          return;
+        }
+        state.budget -= cost;
+        state.activeConstruction = {
+          id: 'add_wing',
+          title: `Новый корпус вширь (Корпус ${state.wingsCount + 1})`,
+          daysLeft: 6,
+          totalDays: 6,
+          isMega: true
+        };
+        showFloatingToast(`-${formatMoney(cost)} ₽ • Строим Корпус №${state.wingsCount + 1}!`, '#fde047');
+      }
+
+      playSfx('hammer');
+      triggerHaptic('medium');
+      saveState();
+      updateUI();
+    }
+
+    function applyMegaExpansionCompletion(id) {
+      if (id === 'add_floor') {
+        state.floorsCount = Math.min(14, state.floorsCount + 1);
+      } else if (id === 'add_wing') {
+        state.wingsCount = Math.min(3, state.wingsCount + 1);
+      }
+      let targetApartments = state.floorsCount * state.wingsCount * 31;
+      if (state.floorsCount >= 14 && state.wingsCount >= 3) {
+        targetApartments = 1300;
+      }
+      const currentLen = state.apartments.length;
+      if (targetApartments > currentLen) {
+        const extra = generateApartments(targetApartments - currentLen);
+        extra.forEach((a, idx) => {
+          a.id = currentLen + idx + 1;
+          a.state = 'ruined';
+        });
+        state.apartments.push(...extra);
+      }
+      showZinaBubble(`«Гляди, какой размах! Теперь в доме ${state.floorsCount} эт. и ${state.apartments.length} квартир!»`);
+    }
+
+    function completeActiveConstruction() {
+      if (!state.activeConstruction) return;
+      const done = state.activeConstruction;
+      state.activeConstruction = null;
+
+      if (done.isMega) {
+        applyMegaExpansionCompletion(done.id);
+        playSfx('upgrade');
+        triggerHaptic('success');
+        saveState();
+        updateUI();
+        checkGameCompletion(false);
+        return;
+      }
+
+      if (!state.completedUpgrades.includes(done.id)) {
+        state.completedUpgrades.push(done.id);
+      }
+
+      const def = NOTEBOOK_UPGRADES_DEF.find(u => u.id === done.id);
+      if (def) {
+        playSfx('upgrade');
+        triggerHaptic('success');
+        showZinaBubble(def.zinaQuote);
+      }
+
+      if (done.id === 'elevator' && !state.mysteryUnlocked) {
+        state.mysteryUnlocked = true;
+        state.events.unshift({
+          id: 'elevator_envelope',
+          title: '✉️ Конверт в лифте (Квартира № 51)',
+          text: 'На полу отремонтированной кабины лифта лежит плотный жёлтый конверт с печатью БТИ 1974 года...',
+          resolved: false,
+          isMystery51: true
+        });
+        updateEventBadges();
+      }
+
+      saveState();
+      updateUI();
+      checkGameCompletion(false);
+    }
+
+    function openMystery51Modal() {
+      playSfx('mystery');
+      triggerHaptic('success');
+      state.mysteryRead = true;
+      const ev = state.events.find(e => e.isMystery51);
+      if (ev) {
+        ev.resolved = true;
+        ev.choiceText = 'Тайна прочитана';
+      }
+      document.getElementById('mystery51-modal').classList.remove('hidden');
+      saveState();
+      updateUI();
+    }
+
+    function closeMystery51Modal() {
+      document.getElementById('mystery51-modal').classList.add('hidden');
+    }
+
+    function unlockPhaseTwoFromMystery() {
+      closeMystery51Modal();
+      activatePhaseTwo();
+      switchTab('notebook');
+    }
+
+    function activatePhaseTwo() {
+      if (state.phaseTwoActive) return;
+      state.phaseTwoActive = true;
+      state.mysteryUnlocked = true;
+      state.phaseTwoAnnounced = true;
+      if (state.daysLeft < 365) state.daysLeft += 365;
+      playSfx('upgrade');
+      triggerHaptic('success');
+      showZinaBubble('«Чертежи 1974 года запущены! Строим вверх до 14 этажей и вширь до 1 300 жильцов!»');
+      saveState();
+      updateUI();
+    }
+
+    function cycleMegaSection() {
+      state.activeMegaSection = (state.activeMegaSection + 1) % Math.max(1, state.wingsCount);
+      playSfx('click');
+      triggerHaptic('light');
+      updateUI();
+    }
+
+    function buyStarFeature(type) {
+      const prices = {
+        speedup: 5,
+        recipe: 6,
+        mass_repair: 7,
+        postpone: 8,
+        crane: 10
+      };
+      const price = prices[type] || 5;
+
+      processTelegramStarsPayment(price, `Услуга Бабы Зины (${price} ⭐)`, () => {
+        if (type === 'speedup') {
+          let acted = false;
+          if (state.activeConstruction) {
+            completeActiveConstruction();
+            acted = true;
+          }
+          state.apartments.forEach(a => {
+            if (a.state === 'repairing') {
+              a.state = 'occupied';
+              a.repairDaysLeft = 0;
+              state.movedIn++;
+              acted = true;
+            }
+          });
+          if (!acted) state.energy = state.maxEnergy;
+          showFloatingToast('⚡ Бригада всё закончила!', '#fde047');
+        } else if (type === 'recipe') {
+          state.pirozhkiDoubleForever = true;
+          const bonus = getPirozhkiReward() * 2;
+          state.budget += bonus;
+          showFloatingToast(`🥟 Рецепт x2 навсегда! +${formatMoney(bonus)} ₽`, '#fb923c');
+        } else if (type === 'mass_repair') {
+          let repaired = 0;
+          for (let i = 0; i < state.apartments.length && repaired < 5; i++) {
+            if (state.apartments[i].state === 'ruined' && canOccupyApartment(i)) {
+              state.apartments[i].state = 'occupied';
+              state.movedIn++;
+              repaired++;
+            }
+          }
+          if (repaired === 0) {
+            state.budget += 250000;
+            showFloatingToast('+250 000 ₽ на стройматериалы!', '#34d399');
+          } else {
+            showFloatingToast(`🛠️ Сразу заселено ${repaired} кв.!`, '#34d399');
+          }
+        } else if (type === 'postpone') {
+          state.daysLeft += 30;
+          showFloatingToast('📅 +30 дней к сроку!', '#60a5fa');
+        } else if (type === 'crane') {
+          if (!state.phaseTwoActive) {
+            state.budget += 500000;
+            showFloatingToast('🏗️ +500 000 ₽ на развитие дома!', '#fde047');
+          } else if (state.floorsCount < 14) {
+            applyMegaExpansionCompletion('add_floor');
+            showFloatingToast('🏗️ Новый этаж возведён!', '#fde047');
+          } else if (state.wingsCount < 3) {
+            applyMegaExpansionCompletion('add_wing');
+            showFloatingToast('🏗️ Новый корпус возведён!', '#fde047');
+          } else {
+            state.budget += 1000000;
+            showFloatingToast('🏗️ +1 000 000 ₽!', '#fde047');
+          }
+        }
+
+        playSfx('upgrade');
+        triggerHaptic('success');
+        closeStarsModal();
+        saveState();
+        updateUI();
+        checkGameCompletion(false);
+      });
+    }
+
+    // =========================================================================
+    // 9. СИСТЕМА ВРЕМЕНИ (300 СЕК = 5 МИН НА 1x) И ЕЖЕДНЕВНЫЙ ТИК
+    // =========================================================================
+    function advanceOneGameDay() {
+      if (state.gameEnded) return;
+
+      state.day++;
+      state.daysLeft = Math.max(0, state.daysLeft - 1);
+
+      // Восстановление энергии
+      state.energy = Math.min(state.maxEnergy, state.energy + 12);
+
+      // Завершение ремонта квартир
+      let newlyOccupied = 0;
+      state.apartments.forEach(apt => {
+        if (apt.state === 'repairing') {
+          apt.repairDaysLeft--;
+          if (apt.repairDaysLeft <= 0) {
+            apt.state = 'occupied';
+            newlyOccupied++;
+            state.movedIn++;
+          }
+        }
+      });
+
+      if (newlyOccupied > 0) {
+        showFloatingToast(`+${newlyOccupied} новых жильцов!`, '#34d399');
+      }
+
+      // Прогресс стройки
+      if (state.activeConstruction) {
+        state.activeConstruction.daysLeft--;
+        if (state.activeConstruction.daysLeft <= 0) {
+          completeActiveConstruction();
+        }
+      }
+
+      // Начисление квартплаты
+      const occ = getOccupiedCount();
+      const dailyRent = occ * getRentPerApartment();
+      state.uncollectedRent += dailyRent;
+
+      // Раз в 30 дней — коммуналка
+      let justFailedUtility = false;
+      if (state.day % 30 === 0) {
+        const utilityCost = occ * 4500;
+        if (state.budget < utilityCost) {
+          justFailedUtility = true;
+        }
+        state.budget -= utilityCost;
+        showZinaBubble(`«Оплатили коммуналку за месяц: -${formatMoney(utilityCost)} ₽.»`);
+      }
+
+      // Проверка условий 10 концовок (2 плохие и 8 хороших)
+      checkGameCompletion(justFailedUtility);
+
+      // Раз в 3 дня — случайное событие
+      if (!state.gameEnded && state.day % 3 === 0) {
+        triggerRandomEvent();
+      }
+
+      saveState();
+    }
+
+    // =========================================================================
+    // 10. СЛУЧАЙНЫЕ СОБЫТИЯ И ЦЕЛИ (ТОЛЬКО АВТОМАТИЧЕСКИЙ РАНДОМ)
+    // =========================================================================
+    const EVENT_TEMPLATES = [
+      {
+        title: 'Кот Барсик занял колясочную',
+        text: 'Жильцы просят поставить там лежанку и миски для дворовых котов.',
+        a: { label: 'Поставить (-15 000 ₽)', cost: 15000, kind: true, msg: 'Уют вырос, жильцы в восторге!' },
+        b: { label: 'Оставить как есть', cost: 0, kind: false, msg: 'Барсик ушёл спать на батарею.' }
+      },
+      {
+        title: 'Съёмки сериала во дворе',
+        text: 'Киногруппа хочет снять сцену у вашего отремонтированного подъезда.',
+        a: { label: 'Пустить (+85 000 ₽)', reward: 85000, kind: false, msg: 'Отличная прибавка в бюджет дома!' },
+        b: { label: 'Не шуметь (+15 энергии)', energy: 15, kind: true, msg: 'Жильцы поблагодарили за тишину.' }
+      },
+      {
+        title: 'Субботник с Бабой Зиной',
+        text: 'Соседи вышли красить лавочки и сажать сирень под окнами.',
+        a: { label: 'Купить краску (-20 000 ₽)', cost: 20000, reward: 65000, kind: true, msg: 'Двор преобразился, аренда стала выгоднее!' },
+        b: { label: 'Помочь лично (-10 энерг.)', energyCost: 10, reward: 40000, kind: true, msg: 'Отлично поработали!' }
+      },
+      {
+        title: 'Прорвало трубу в подвале',
+        text: 'Сантехник Петрович просит срочно купить новые муфты и задвижки.',
+        a: { label: 'Вызвать аварийку (-35 000 ₽)', cost: 35000, kind: true, msg: 'Аварию устранили за час, жильцы благодарны!' },
+        b: { label: 'Перекрыть своими силами (-15 энерг.)', energyCost: 15, kind: true, msg: 'Руки в мазуте, зато бюджет цел!' }
+      },
+      {
+        title: 'Бабушки разбили клумбу у подъезда',
+        text: 'Соседки с первого этажа просят привезти землю и рассаду пионов.',
+        a: { label: 'Заказать грунт (-18 000 ₽)', cost: 18000, reward: 45000, kind: true, msg: 'Подъезд стал самым красивым на улице!' },
+        b: { label: 'Полить из ведра (+10 энергии)', energy: 10, kind: true, msg: 'Душевный разговор с соседками!' }
+      },
+      {
+        title: 'Забытый чемодан на чердаке',
+        text: 'При осмотре балок нашли старый кожаный чемодан с облигациями 1978 года.',
+        a: { label: 'Сдать в антикварную лавку (+110 000 ₽)', reward: 110000, kind: false, msg: 'Отличная находка для кассы дома!' },
+        b: { label: 'Сделать музей подъезда', cost: 10000, kind: true, msg: 'Жильцы в восторге от уголка истории!' }
+      },
+      {
+        title: 'Чаепитие с пирогами во дворе',
+        text: 'Баба Зина вынесла самовар и пригласила всех новосёлов познакомиться.',
+        a: { label: 'Купить сладости к чаю (-12 000 ₽)', cost: 12000, energy: 25, kind: true, msg: 'Соседи подружились, силы восстановлены!' },
+        b: { label: 'Помочь накрыть стол (+15 энергии)', energy: 15, kind: true, msg: 'Тёплый вечер в дружном подъезде!' }
+      },
+      {
+        title: 'Проверка пожарной инспекции',
+        text: 'Инспектор проверяет огнетушители и планы эвакуации на этажах.',
+        a: { label: 'Обновить стенды (-25 000 ₽)', cost: 25000, kind: true, msg: 'Проверка пройдена на отлично!' },
+        b: { label: 'Угостить инспектора пирожком (-10 энерг.)', energyCost: 10, kind: false, msg: 'Инспектор растрогался и поставил печать!' }
+      },
+      {
+        title: 'Музыкант на лестничной клетке',
+        text: 'Студент консерватории просит разрешить репетировать на скрипке днём.',
+        a: { label: 'Разрешить до 19:00', kind: true, msg: 'В подъезде теперь звучит классика!' },
+        b: { label: 'Попросить тишины (+10 энергии)', energy: 10, kind: false, msg: 'В доме царит спокойствие.' }
+      },
+      {
+        title: 'Странный стук из шахты лифта',
+        text: 'Ночью из-за бетонной перегородки послышался металлический звон.',
+        a: { label: 'Осмотреть с фонариком (-10 энерг.)', energyCost: 10, reward: 55000, kind: true, msg: 'Нашли заначку строителей 70-х годов!' },
+        b: { label: 'Не лезть ночью (+10 энергии)', energy: 10, kind: false, msg: 'Утро вечера мудренее.' }
+      }
+    ];
+
+    function triggerRandomEvent() {
+      const unresolved = state.events.filter(e => !e.resolved);
+      if (unresolved.length >= 2) return;
+
+      const available = EVENT_TEMPLATES.filter(t => t.title !== state.lastEventTitle);
+      const pool = available.length > 0 ? available : EVENT_TEMPLATES;
+      const tpl = pool[Math.floor(Math.random() * pool.length)];
+
+      state.lastEventTitle = tpl.title;
+      state.events.unshift({
+        id: 'ev_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        title: tpl.title,
+        text: tpl.text,
+        a: tpl.a,
+        b: tpl.b,
+        resolved: false
+      });
+
+      if (state.events.length > 15) {
+        state.events.length = 15;
+      }
+
+      playSfx('click');
+      showFloatingToast('⚡ Новое событие в подъезде!', '#fbbf24');
+      saveState();
+      updateUI();
+    }
+
+    function resolveEvent(eventId, choiceKey) {
+      const ev = state.events.find(e => e.id === eventId);
+      if (!ev || ev.resolved) return;
+
+      if (ev.isMystery51) {
+        openMystery51Modal();
+        return;
+      }
+
+      const opt = ev[choiceKey];
+      if (!opt) return;
+
+      if (opt.cost && state.budget < opt.cost) {
+        showZinaBubble('«Не хватает средств для этого решения!»');
+        triggerHaptic('error');
+        return;
+      }
+      if (opt.energyCost && state.energy < opt.energyCost) {
+        showZinaBubble('«Недостаточно энергии!»');
+        triggerHaptic('error');
+        return;
+      }
+
+      if (opt.cost) state.budget -= opt.cost;
+      if (opt.energyCost) state.energy -= opt.energyCost;
+      if (opt.reward) state.budget += opt.reward;
+      if (opt.energy) state.energy = Math.min(state.maxEnergy, state.energy + opt.energy);
+      if (opt.kind) state.kindChoicesCount = (state.kindChoicesCount || 0) + 1;
+
+      ev.resolved = true;
+      ev.choiceText = opt.msg;
+      playSfx('coin');
+      triggerHaptic('success');
+      saveState();
+      updateUI();
+      checkGameCompletion(false);
+    }
+
+    function claimGoal(goalId) {
+      const g = GOALS_DEF.find(x => x.id === goalId);
+      if (!g || state.claimedGoals.includes(goalId)) return;
+      state.claimedGoals.push(goalId);
+      state.budget += g.reward;
+      playSfx('upgrade');
+      triggerHaptic('success');
+      showFloatingToast(`+${formatMoney(g.reward)} ₽ 🏅`, '#fde047');
+      saveState();
+      updateUI();
+    }
+
+    // =========================================================================
+    // 11. ОТРИСОВКА ЗДАНИЯ НА CANVAS (ДЕТАЛЬНЫЙ ИНТЕРЬЕР + ЛИФТ + МЕГА-ДОМ)
+    // =========================================================================
+    const canvas = document.getElementById('building-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawRoundRect(context, x, y, w, h, r) {
+      if (typeof context.roundRect === 'function') {
+        context.roundRect(x, y, w, h, r);
+        return;
+      }
+      const radius = Math.min(r, w / 2, h / 2);
+      context.moveTo(x + radius, y);
+      context.arcTo(x + w, y, x + w, y + h, radius);
+      context.arcTo(x + w, y + h, x, y + h, radius);
+      context.arcTo(x, y + h, x, y, radius);
+      context.arcTo(x, y, x + w, y, radius);
+      context.closePath();
+    }
+
+    function resizeCanvas() {
+      const wrapper = document.getElementById('canvas-wrapper');
+      if (!wrapper) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = wrapper.clientWidth;
+      const h = Math.round(w * 0.72);
+      canvas.style.height = h + 'px';
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    let windowHitboxes = [];
+
+    function drawDetailedRoomInterior(x, y, w, h, apt, time) {
+      const palettes = {
+        warm: { wall: '#fde68a', glow: '#f59e0b', curtain: '#b91c1c' },
+        emerald: { wall: '#d1fae5', glow: '#10b981', curtain: '#047857' },
+        lavender: { wall: '#ede9fe', glow: '#8b5cf6', curtain: '#5b21b6' },
+        peach: { wall: '#ffedd5', glow: '#f97316', curtain: '#c2410c' },
+        sky: { wall: '#e0f2fe', glow: '#0ea5e9', curtain: '#0369a1' }
+      };
+      const pal = palettes[apt.interiorTheme] || palettes.warm;
+
+      const grad = ctx.createLinearGradient(x, y, x, y + h);
+      grad.addColorStop(0, pal.wall);
+      grad.addColorStop(1, pal.glow);
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, y, w, h);
+
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x + w * 0.47, y, w * 0.06, h * 0.14);
+      ctx.beginPath();
+      ctx.moveTo(x + w * 0.34, y + h * 0.24);
+      ctx.lineTo(x + w * 0.66, y + h * 0.24);
+      ctx.lineTo(x + w * 0.56, y + h * 0.13);
+      ctx.lineTo(x + w * 0.44, y + h * 0.13);
+      ctx.closePath();
+      ctx.fillStyle = '#fef08a';
+      ctx.fill();
+
+      if (apt.hasBooks) {
+        ctx.fillStyle = 'rgba(120, 53, 15, 0.55)';
+        ctx.fillRect(x + w * 0.12, y + h * 0.36, w * 0.22, h * 0.54);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(x + w * 0.15, y + h * 0.44, w * 0.05, h * 0.12);
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillRect(x + w * 0.21, y + h * 0.44, w * 0.05, h * 0.12);
+      }
+
+      if (apt.hasTv) {
+        const flicker = 0.7 + 0.3 * Math.sin(time * 5 + apt.id);
+        ctx.fillStyle = `rgba(56, 189, 248, ${flicker})`;
+        ctx.fillRect(x + w * 0.66, y + h * 0.58, w * 0.22, h * 0.24);
+      }
+
+      const sway = Math.sin(time * 1.4 + apt.id) * (w * 0.05);
+      ctx.fillStyle = 'rgba(30, 27, 75, 0.68)';
+      ctx.beginPath();
+      ctx.arc(x + w * 0.5 + sway, y + h * 0.52, w * 0.11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      drawRoundRect(ctx, x + w * 0.36 + sway, y + h * 0.64, w * 0.28, h * 0.36, 3);
+      ctx.fill();
+
+      if (apt.hasCat) {
+        ctx.fillStyle = '#1e1b4b';
+        ctx.beginPath();
+        ctx.arc(x + w * 0.22, y + h * 0.86, w * 0.08, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = pal.curtain;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + w * 0.22, y);
+      ctx.quadraticCurveTo(x + w * 0.1, y + h * 0.5, x + w * 0.18, y + h);
+      ctx.lineTo(x, y + h);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(x + w, y);
+      ctx.lineTo(x + w * 0.78, y);
+      ctx.quadraticCurveTo(x + w * 0.9, y + h * 0.5, x + w * 0.82, y + h);
+      ctx.lineTo(x + w, y + h);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawBuildingScene(timestamp) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const W = canvas.width / dpr;
+      const H = canvas.height / dpr;
+      const t = timestamp * 0.001;
+      windowHitboxes = [];
+
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
+      skyGrad.addColorStop(0, '#131029');
+      skyGrad.addColorStop(0.6, '#231942');
+      skyGrad.addColorStop(1, '#18142b');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      for (let i = 0; i < 18; i++) {
+        const sx = ((i * 73) % (W - 20)) + 10;
+        const sy = ((i * 29) % (H * 0.28)) + 8;
+        const r = (i % 3 === 0) ? 1.5 : 1;
+        ctx.globalAlpha = 0.4 + 0.5 * Math.sin(t * 2 + i);
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.arc(W - 42, 34, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#181333';
+      ctx.beginPath();
+      ctx.arc(W - 36, 30, 13, 0, Math.PI * 2);
+      ctx.fill();
+
+      const displayFloors = state.phaseTwoActive ? Math.min(14, state.floorsCount) : 5;
+      const colsPerRow = 10;
+      const marginX = state.phaseTwoActive ? 22 : 34;
+      const bWidth = W - marginX * 2;
+      const roofH = 24;
+      const lobbyH = 26;
+      const topY = state.phaseTwoActive ? 38 : 54;
+      const bHeight = H - topY - lobbyH - 8;
+      const bX = marginX;
+
+      ctx.fillStyle = '#333047';
+      ctx.beginPath();
+      ctx.moveTo(bX - 8, topY);
+      ctx.lineTo(bX + bWidth + 8, topY);
+      ctx.lineTo(bX + bWidth - 4, topY - roofH);
+      ctx.lineTo(bX + 4, topY - roofH);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#0f0d1a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      if (!state.completedUpgrades.includes('roof')) {
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(bX + bWidth * 0.42, topY - roofH + 5, 26, 12);
+      }
+
+      const brickGrad = ctx.createLinearGradient(bX, topY, bX + bWidth, topY + bHeight);
+      brickGrad.addColorStop(0, '#784836');
+      brickGrad.addColorStop(0.5, '#693d2d');
+      brickGrad.addColorStop(1, '#522e22');
+      ctx.fillStyle = brickGrad;
+      ctx.fillRect(bX, topY, bWidth, bHeight);
+      ctx.strokeStyle = '#1a110d';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bX, topY, bWidth, bHeight);
+
+      ctx.strokeStyle = 'rgba(26, 17, 13, 0.25)';
+      ctx.lineWidth = 1;
+      for (let y = topY + 6; y < topY + bHeight; y += 7) {
+        ctx.beginPath();
+        ctx.moveTo(bX, y);
+        ctx.lineTo(bX + bWidth, y);
+        ctx.stroke();
+      }
+
+      if (state.phaseTwoActive) {
+        const craneX = W - 18;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(craneX, H - 8);
+        ctx.lineTo(craneX, 14);
+        ctx.lineTo(craneX - 95, 14);
+        ctx.stroke();
+        const hookY = 24 + Math.sin(t * 1.5) * 6;
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(craneX - 75, 14);
+        ctx.lineTo(craneX - 75, hookY);
+        ctx.stroke();
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(craneX - 81, hookY, 12, 7);
+      }
+
+      const shaftW = Math.max(18, bWidth * 0.075);
+      const shaftX = bX + (bWidth - shaftW) / 2;
+      ctx.fillStyle = '#1c1829';
+      ctx.fillRect(shaftX, topY + 2, shaftW, bHeight - 4);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(shaftX, topY + 2, shaftW, bHeight - 4);
+
+      const cabH = Math.max(12, (bHeight / displayFloors) * 0.72);
+      let cabY = topY + bHeight - cabH - 4;
+      if (hasElevator()) {
+        const norm = (Math.sin(t * 0.85) + 1) * 0.5;
+        cabY = topY + 4 + norm * (bHeight - cabH - 8);
+      }
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(shaftX + shaftW / 2, topY + 2);
+      ctx.lineTo(shaftX + shaftW / 2, cabY);
+      ctx.stroke();
+
+      ctx.fillStyle = hasElevator() ? '#fde047' : '#475569';
+      ctx.fillRect(shaftX + 2, cabY, shaftW - 4, cabH);
+
+      const sideWidth = (bWidth - shaftW) / 2;
+      const floorH = bHeight / displayFloors;
+      const winPadX = sideWidth * 0.035;
+      const winW = (sideWidth - winPadX * 6) / 5;
+      const winH = floorH * 0.68;
+
+      const sectionOffset = (state.activeMegaSection || 0) * (displayFloors * 10);
+
+      for (let f = 0; f < displayFloors; f++) {
+        const floorIndexFromBottom = displayFloors - 1 - f;
+        const rowY = topY + f * floorH + (floorH - winH) * 0.5;
+
+        for (let c = 0; c < colsPerRow; c++) {
+          const isRightWing = c >= 5;
+          const localCol = isRightWing ? c - 5 : c;
+          const wingStartX = isRightWing ? (shaftX + shaftW) : bX;
+          const winX = wingStartX + winPadX + localCol * (winW + winPadX);
+
+          const aptIdx = sectionOffset + floorIndexFromBottom * 10 + c;
+          const apt = state.apartments[aptIdx] || state.apartments[aptIdx % state.apartments.length];
+
+          ctx.fillStyle = '#171426';
+          ctx.fillRect(winX, rowY, winW, winH);
+
+          if (apt && apt.state === 'occupied') {
+            drawDetailedRoomInterior(winX, rowY, winW, winH, apt, t);
+          } else if (apt && apt.state === 'repairing') {
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(winX, rowY, winW, winH);
+            ctx.fillStyle = '#34d399';
+            ctx.font = `bold ${Math.max(8, Math.floor(winH * 0.45))}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('🔨', winX + winW / 2, rowY + winH * 0.68);
+          } else {
+            ctx.fillStyle = '#241f38';
+            ctx.fillRect(winX, rowY, winW, winH);
+            ctx.fillStyle = '#855834';
+            ctx.save();
+            ctx.translate(winX + winW / 2, rowY + winH / 2);
+            ctx.rotate(-0.18);
+            ctx.fillRect(-winW * 0.46, -winH * 0.22, winW * 0.92, Math.max(2.5, winH * 0.14));
+            ctx.rotate(0.34);
+            ctx.fillRect(-winW * 0.46, 0, winW * 0.92, Math.max(2.5, winH * 0.14));
+            ctx.restore();
+          }
+
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(winX, rowY, winW, winH);
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillRect(winX - 1.5, rowY + winH, winW + 3, 2.5);
+
+          windowHitboxes.push({
+            x: winX,
+            y: rowY,
+            w: winW,
+            h: winH,
+            aptIdx: Math.min(aptIdx, state.apartments.length - 1)
+          });
+        }
+      }
+
+      if (!hasElevator() && !state.phaseTwoActive) {
+        const lockedH = floorH * 2;
+        ctx.save();
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 4]);
+        ctx.strokeRect(bX + 2, topY + 2, bWidth - 4, lockedH - 2);
+        ctx.restore();
+
+        const pillW = Math.min(bWidth * 0.78, 225);
+        const pillH = 22;
+        const pillX = bX + (bWidth - pillW) / 2;
+        const pillY = topY + lockedH - pillH / 2;
+
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath();
+        drawRoundRect(ctx, pillX, pillY, pillW, pillH, 11);
+        ctx.fill();
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#1c1917';
+        ctx.font = '800 9.5px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🛗 БЕЗ ЛИФТА СЮДА НЕ ЗАЕДУТ', bX + bWidth / 2, pillY + 14.5);
+      }
+
+      const groundY = topY + bHeight;
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(bX - 4, groundY, bWidth + 8, lobbyH);
+
+      const doorW = 34;
+      const doorX = bX + (bWidth - doorW) / 2;
+      ctx.fillStyle = state.completedUpgrades.includes('intercom') ? '#1e3a8a' : '#27272a';
+      ctx.fillRect(doorX, groundY + 4, doorW, lobbyH - 4);
+      if (state.completedUpgrades.includes('intercom')) {
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.arc(doorX + doorW - 5, groundY + 13, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(doorX - 6, groundY + 1, doorW + 12, 4);
+
+      const manX = doorX - 18;
+      const manY = groundY + lobbyH - 22;
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      drawRoundRect(ctx, manX, manY + 7, 13, 15, 4);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(manX + 6.5, manY + 5, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      const lampX = bX + bWidth + 12;
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(lampX, groundY + lobbyH);
+      ctx.lineTo(lampX, groundY - 26);
+      ctx.stroke();
+
+      const lampGlow = ctx.createRadialGradient(lampX, groundY - 28, 1, lampX, groundY - 28, 22);
+      lampGlow.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+      lampGlow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+      ctx.fillStyle = lampGlow;
+      ctx.beginPath();
+      ctx.arc(lampX, groundY - 28, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      for (const hb of windowHitboxes) {
+        if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
+          repairApartmentByIndex(hb.aptIdx);
+          return;
+        }
+      }
+    });
+
+    // =========================================================================
+    // 12. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА (UI)
+    // =========================================================================
+    function showFloatingToast(text, color = '#34d399') {
+      const shell = document.getElementById('app-shell');
+      const el = document.createElement('div');
+      el.className = 'floating-toast text-sm';
+      el.style.color = color;
+      el.style.left = '50%';
+      el.style.top = '38%';
+      el.style.transform = 'translateX(-50%)';
+      el.textContent = text;
+      shell.appendChild(el);
+      setTimeout(() => el.remove(), 1300);
+    }
+
+    let zinaTimer = null;
+    function showZinaBubble(text) {
+      const bubble = document.getElementById('zina-bubble');
+      document.getElementById('zina-text').textContent = text;
+      bubble.classList.remove('hidden');
+      clearTimeout(zinaTimer);
+      zinaTimer = setTimeout(() => bubble.classList.add('hidden'), 6500);
+    }
+    function hideZinaBubble() {
+      document.getElementById('zina-bubble').classList.add('hidden');
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('bg-[#241f42]', 'text-amber-300', 'border', 'border-amber-400/40');
+        b.classList.add('text-slate-400');
+      });
+      const activeBtn = document.getElementById('tab-btn-' + tabName);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400');
+        activeBtn.classList.add('bg-[#241f42]', 'text-amber-300', 'border', 'border-amber-400/40');
+      }
+      playSfx('click');
+      triggerHaptic('light');
+    }
+
+    function updateSpeedButtonsUI() {
+      [1, 1.5, 5, 10].forEach(spd => {
+        const btn = document.getElementById('spd-btn-' + spd);
+        if (!btn) return;
+        const isSelected = state.speed === spd;
+        btn.className = isSelected
+          ? 'px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-400 text-slate-950 shadow transition'
+          : 'px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-300 hover:text-white transition flex items-center gap-0.5';
+      });
+
+      const tag5 = document.getElementById('spd-tag-5');
+      if (tag5) tag5.textContent = state.unlockedSpeed5 ? '✓' : '⭐5';
+
+      const tag10 = document.getElementById('spd-tag-10');
+      if (tag10) tag10.textContent = state.unlockedSpeed10 ? '✓' : '⭐10';
+
+      const shop5 = document.getElementById('shop-btn-speed5');
+      if (shop5) {
+        shop5.textContent = state.unlockedSpeed5 ? '✓ Открыто навсегда' : '5 ⭐ Навсегда';
+        shop5.disabled = state.unlockedSpeed5;
+      }
+      const shop10 = document.getElementById('shop-btn-speed10');
+      if (shop10) {
+        shop10.textContent = state.unlockedSpeed10 ? '✓ Открыто навсегда' : '10 ⭐ Навсегда';
+        shop10.disabled = state.unlockedSpeed10;
+      }
+
+      const mod5 = document.getElementById('modal-tag-speed5');
+      if (mod5) mod5.textContent = state.unlockedSpeed5 ? '✓ Куплено' : '5 ⭐';
+      const mod10 = document.getElementById('modal-tag-speed10');
+      if (mod10) mod10.textContent = state.unlockedSpeed10 ? '✓ Куплено' : '10 ⭐';
+
+      const recipeBtn = document.getElementById('shop-btn-recipe');
+      if (recipeBtn) {
+        recipeBtn.textContent = state.pirozhkiDoubleForever ? '✓ x2' : '6 ⭐';
+        recipeBtn.disabled = state.pirozhkiDoubleForever;
+      }
+    }
+
+    function updateEventBadges() {
+      const unresolvedCount = state.events.filter(e => !e.resolved).length;
+      const bEv = document.getElementById('badge-events');
+      if (unresolvedCount > 0) {
+        bEv.textContent = unresolvedCount;
+        bEv.classList.remove('hidden');
+      } else {
+        bEv.classList.add('hidden');
+      }
+    }
+
+    function updateUI() {
+      const occ = getOccupiedCount();
+      const maxCap = getMaxCapacity();
+      const coz = getCoziness();
+
+      // HUD
+      document.getElementById('hud-days-left').textContent = state.daysLeft;
+      document.getElementById('hud-tenants').textContent = `${occ}/${maxCap}`;
+      document.getElementById('hud-budget').textContent = formatMoney(state.budget);
+      document.getElementById('hud-day').textContent = state.day;
+      document.getElementById('hud-energy').textContent = state.energy;
+      document.getElementById('hud-stars').textContent = state.starsBalance;
+      document.getElementById('modal-stars-balance').textContent = `${state.starsBalance} ⭐`;
+      document.getElementById('hud-endings-count').textContent = `${unlockedEndings.length}/10`;
+      document.getElementById('stats-endings-badge').textContent = `${unlockedEndings.length} / 10`;
+
+      // Баннер завершённой игры или готовности подвести итоги
+      const endedBanner = document.getElementById('game-ended-banner');
+      if (state.gameEnded) {
+        endedBanner.classList.remove('hidden');
+        const curEnd = ENDINGS_DEF.find(e => e.id === state.triggeredEndingId);
+        document.getElementById('ended-banner-title').textContent = curEnd
+          ? `${curEnd.icon} Концовка: ${curEnd.title}`
+          : '🏁 Финал достигнут!';
+        document.getElementById('ended-banner-sub').textContent = 'В игре 10 концовок (2 плохие и 8 хороших)';
+        document.getElementById('ended-banner-btn').textContent = 'Итоги и финал';
+      } else if (isMegaHouseComplete() || isPhaseOneComplete()) {
+        endedBanner.classList.remove('hidden');
+        document.getElementById('ended-banner-title').textContent = '🏁 Все работы завершены!';
+        document.getElementById('ended-banner-sub').textContent = 'Нажмите, чтобы получить концовку (10 вариантов)';
+        document.getElementById('ended-banner-btn').textContent = '🏁 Подвести итоги';
+      } else {
+        endedBanner.classList.add('hidden');
+      }
+
+      const secondsRemaining = (1 - state.dayProgress) * REAL_SECONDS_PER_DAY;
+      document.getElementById('hud-day-countdown').textContent = formatCountdown(secondsRemaining);
+      document.getElementById('day-progress-bar').style.width = `${Math.round(state.dayProgress * 100)}%`;
+
+      // Индикатор фазы
+      const phasePill = document.getElementById('phase-pill');
+      if (state.phaseTwoActive) {
+        phasePill.textContent = 'ФАЗА II • МЕГА-ДОМ';
+        phasePill.className = 'text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400/25 border border-amber-400/50 text-amber-300 shrink-0';
+        document.getElementById('megahouse-controls').classList.remove('hidden');
+        document.getElementById('mega-floors-badge').textContent = `${state.floorsCount} эт.`;
+        document.getElementById('mega-section-label').textContent = `${state.activeMegaSection + 1}/${state.wingsCount}`;
+      } else {
+        phasePill.textContent = 'ФАЗА I • 5 ЭТАЖЕЙ';
+        document.getElementById('megahouse-controls').classList.add('hidden');
+      }
+
+      updateSpeedButtonsUI();
+
+      // Баннер активной стройки
+      const constrBanner = document.getElementById('construction-banner');
+      if (state.activeConstruction) {
+        constrBanner.classList.remove('hidden');
+        document.getElementById('constr-title').textContent = `Стройка: ${state.activeConstruction.title}`;
+        document.getElementById('constr-days').textContent = `Осталось: ${state.activeConstruction.daysLeft} дн.`;
+      } else {
+        constrBanner.classList.add('hidden');
+      }
+
+      // Быстрые кнопки
+      document.getElementById('collect-amount').textContent = `${formatMoney(state.uncollectedRent)} ₽`;
+      const btnCollect = document.getElementById('btn-collect');
+      if (state.uncollectedRent > 0) {
+        btnCollect.classList.add('btn-emerald');
+        btnCollect.classList.remove('bg-[#182924]', 'text-emerald-300');
+      } else {
+        btnCollect.classList.remove('btn-emerald');
+        btnCollect.classList.add('bg-[#182924]');
+      }
+
+      const repCost = getRepairCost();
+      document.getElementById('repair-cost-label').textContent = `${formatMoney(repCost)} ₽`;
+      document.getElementById('btn-repair').disabled = state.budget < repCost;
+
+      const pirReward = getPirozhkiReward();
+      document.getElementById('pirozhki-reward-label').textContent = `+${formatMoney(pirReward)} ₽`;
+      document.getElementById('btn-pirozhki').disabled = state.energy < 10;
+      if (state.pirozhkiDoubleForever) {
+        document.getElementById('pirozhki-x2-badge').classList.remove('hidden');
+      } else {
+        document.getElementById('pirozhki-x2-badge').classList.add('hidden');
+      }
+
+      // Статусы квартир
+      const repairing = state.apartments.filter(a => a.state === 'repairing').length;
+      const ruined = state.apartments.filter(a => a.state === 'ruined').length;
+      document.getElementById('stat-occupied').textContent = occ;
+      document.getElementById('stat-ready').textContent = 0;
+      document.getElementById('stat-repairing').textContent = repairing;
+      document.getElementById('stat-ruined').textContent = ruined;
+
+      // Тетрадка Бабы Зины
+      document.getElementById('notebook-coziness').textContent = coz;
+      const nbList = document.getElementById('notebook-upgrades-list');
+      nbList.innerHTML = NOTEBOOK_UPGRADES_DEF.map((u, idx) => {
+        const done = state.completedUpgrades.includes(u.id);
+        const prevDone = idx === 0 || state.completedUpgrades.includes(NOTEBOOK_UPGRADES_DEF[idx - 1].id);
+        const inProgress = state.activeConstruction && state.activeConstruction.id === u.id;
+
+        let actionHtml = '';
+        if (done) {
+          actionHtml = `<span class="px-2.5 py-1 rounded-lg bg-emerald-600/15 text-emerald-800 font-extrabold text-xs">✓ Готово</span>`;
+        } else if (inProgress) {
+          actionHtml = `<span class="px-2.5 py-1 rounded-lg bg-amber-500/25 text-amber-900 font-extrabold text-xs">🚧 ${state.activeConstruction.daysLeft} дн.</span>`;
+        } else if (!prevDone) {
+          actionHtml = `<span class="w-9 h-9 rounded-lg bg-slate-200/80 border border-slate-300 flex items-center justify-center text-slate-500">🔒</span>`;
+        } else {
+          actionHtml = `<button onclick="startNotebookUpgrade('${u.id}')" class="btn-game btn-gold px-3 py-1.5 rounded-lg text-xs font-black">Начать</button>`;
+        }
+
+        return `
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-300/60 last:border-b-0 last:pb-0">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <span class="text-xl mt-0.5 shrink-0">${u.icon}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-extrabold text-slate-900">${u.num}. ${u.title}</span>
+                  ${u.badge ? `<span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-indigo-600 text-white">${u.badge}</span>` : ''}
+                </div>
+                <div class="text-[11px] font-extrabold text-rose-700 mt-0.5">
+                  ${formatMoney(u.cost)} ₽ <span class="font-medium text-slate-600">• ${u.days} дн. — ${u.desc}</span>
+                </div>
+              </div>
+            </div>
+            <div class="shrink-0">${actionHtml}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Карточка тайны 51 квартиры
+      if (state.mysteryUnlocked) {
+        document.getElementById('secret-lock-icon').textContent = '🕯️';
+        document.getElementById('secret-content').innerHTML = `
+          <div class="flex items-center justify-between gap-2 mt-1">
+            <div>
+              <div class="text-xs font-extrabold text-amber-900">Конверт из Квартиры № 51</div>
+              <p class="text-[11px] text-slate-700 mt-0.5">Загадочный чертёж 1974 года и послание о будущем дома.</p>
+            </div>
+            <button onclick="openMystery51Modal()" class="btn-game btn-gold px-3 py-1.5 rounded-lg text-xs font-black shrink-0">Открыть</button>
+          </div>
+        `;
+      } else {
+        document.getElementById('secret-lock-icon').textContent = '🔒';
+        document.getElementById('secret-content').innerHTML = `
+          <div class="flex items-start gap-2.5 mt-1">
+            <span class="text-lg mt-0.5">✉️</span>
+            <div>
+              <div class="text-xs font-extrabold text-slate-800">Тайна квартиры № 51</div>
+              <p class="text-[11px] text-slate-600 leading-snug mt-0.5">
+                Сначала почини лифт (пункт 5), чтобы открыть событие «Конверт в лифте» и узнать, что скрывается за бетонной стеной.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      // Панель Мега-Дома (Фаза II)
+      const megaPanel = document.getElementById('megahouse-panel');
+      if (state.phaseTwoActive) {
+        megaPanel.classList.remove('hidden');
+        const floorCost = getMegaFloorCost();
+        const wingCost = getMegaWingCost();
+        const floorBuilding = state.activeConstruction && state.activeConstruction.id === 'add_floor';
+        const wingBuilding = state.activeConstruction && state.activeConstruction.id === 'add_wing';
+        const busyOther = Boolean(state.activeConstruction);
+
+        let floorBtnHtml = '';
+        if (state.floorsCount >= 14) {
+          floorBtnHtml = `<span class="px-2.5 py-1.5 rounded-lg bg-emerald-600/15 text-emerald-800 font-extrabold text-xs shrink-0">✓ 14 эт.</span>`;
+        } else if (floorBuilding) {
+          floorBtnHtml = `<span class="px-2.5 py-1.5 rounded-lg bg-amber-500/25 text-amber-900 font-extrabold text-xs shrink-0">🚧 ${state.activeConstruction.daysLeft} дн.</span>`;
+        } else {
+          floorBtnHtml = `<button onclick="buildMegaExpansion('add_floor')" ${busyOther ? 'disabled' : ''} class="btn-game btn-gold px-3 py-1.5 rounded-lg text-xs font-black shrink-0">Надстроить</button>`;
+        }
+
+        let wingBtnHtml = '';
+        if (state.wingsCount >= 3) {
+          wingBtnHtml = `<span class="px-2.5 py-1.5 rounded-lg bg-emerald-600/15 text-emerald-800 font-extrabold text-xs shrink-0">✓ 3 корп.</span>`;
+        } else if (wingBuilding) {
+          wingBtnHtml = `<span class="px-2.5 py-1.5 rounded-lg bg-amber-500/25 text-amber-900 font-extrabold text-xs shrink-0">🚧 ${state.activeConstruction.daysLeft} дн.</span>`;
+        } else {
+          wingBtnHtml = `<button onclick="buildMegaExpansion('add_wing')" ${busyOther ? 'disabled' : ''} class="btn-game btn-gold px-3 py-1.5 rounded-lg text-xs font-black shrink-0">Расширить</button>`;
+        }
+
+        document.getElementById('megahouse-upgrades-list').innerHTML = `
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-amber-700/20">
+            <div>
+              <div class="text-xs font-extrabold text-slate-900">🏢 Этаж №${Math.min(14, state.floorsCount + 1)} (сейчас ${state.floorsCount}/14)</div>
+              <div class="text-[11px] font-bold text-rose-700">${state.floorsCount >= 14 ? 'Максимум достигнут' : formatMoney(floorCost) + ' ₽ • 4 дн.'}</div>
+            </div>
+            ${floorBtnHtml}
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-extrabold text-slate-900">🏗️ Корпус №${Math.min(3, state.wingsCount + 1)} вширь (сейчас ${state.wingsCount}/3)</div>
+              <div class="text-[11px] font-bold text-rose-700">${state.wingsCount >= 3 ? 'Все 3 корпуса построены' : formatMoney(wingCost) + ' ₽ • 6 дн.'}</div>
+            </div>
+            ${wingBtnHtml}
+          </div>
+        `;
+      } else {
+        megaPanel.classList.add('hidden');
+      }
+
+      // События
+      updateEventBadges();
+      const evList = document.getElementById('events-list');
+      evList.innerHTML = state.events.map(ev => {
+        if (ev.isMystery51) {
+          return `
+            <div class="bg-gradient-to-r from-amber-950/70 to-[#120f22] border border-amber-400/50 rounded-xl p-3 space-y-2">
+              <div class="text-xs font-extrabold text-amber-300">${ev.title}</div>
+              <p class="text-[11px] text-slate-200">${ev.text}</p>
+              <button onclick="openMystery51Modal()" class="w-full py-2 rounded-lg bg-amber-400 text-slate-950 font-black text-xs">
+                🕯️ Распечатать конверт № 51
+              </button>
+            </div>
+          `;
+        }
+        return `
+          <div class="bg-[#120f22] border border-white/10 rounded-xl p-3 space-y-2">
+            <div class="text-xs font-extrabold text-white">${ev.title}</div>
+            <p class="text-[11px] text-slate-300">${ev.text}</p>
+            ${ev.resolved
+              ? `<div class="text-[11px] font-bold text-emerald-400">✓ ${ev.choiceText || 'Выполнено'}</div>`
+              : `<div class="grid grid-cols-2 gap-2 pt-1">
+                  <button onclick="resolveEvent('${ev.id}', 'a')" class="py-1.5 px-2 rounded-lg bg-amber-400 text-slate-950 font-extrabold text-[11px]">${ev.a.label}</button>
+                  <button onclick="resolveEvent('${ev.id}', 'b')" class="py-1.5 px-2 rounded-lg bg-white/10 text-white font-bold text-[11px]">${ev.b.label}</button>
+                </div>`
+            }
+          </div>
+        `;
+      }).join('');
+
+      // Цели
+      let claimableGoals = 0;
+      const goalsList = document.getElementById('goals-list');
+      goalsList.innerHTML = GOALS_DEF.map(g => {
+        const claimed = state.claimedGoals.includes(g.id);
+        let cur = 0;
+        if (g.type === 'tenants') cur = occ;
+        if (g.type === 'upgrades') cur = state.completedUpgrades.length;
+        if (g.type === 'mystery') cur = state.mysteryRead ? 1 : 0;
+        const ready = !claimed && cur >= g.target;
+        if (ready) claimableGoals++;
+
+        return `
+          <div class="bg-[#120f22] border ${ready ? 'border-amber-400/50' : 'border-white/10'} rounded-xl p-3 flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-extrabold text-white">${g.title}</div>
+              <div class="text-[11px] text-slate-400">${g.desc} (${Math.min(cur, g.target)}/${g.target})</div>
+              <div class="text-[10px] font-bold text-emerald-400 mt-0.5">Награда: +${formatMoney(g.reward)} ₽</div>
+            </div>
+            ${claimed
+              ? `<span class="text-xs font-extrabold text-emerald-400">✓ Получено</span>`
+              : ready
+                ? `<button onclick="claimGoal('${g.id}')" class="btn-game btn-gold px-3 py-1.5 rounded-lg text-xs font-black">Забрать</button>`
+                : `<span class="text-xs text-slate-500 font-bold">${Math.round((Math.min(cur, g.target) / g.target) * 100)}%</span>`
+            }
+          </div>
+        `;
+      }).join('');
+
+      const bGoals = document.getElementById('badge-goals');
+      if (claimableGoals > 0) bGoals.classList.remove('hidden');
+      else bGoals.classList.add('hidden');
+
+      // Сводка
+      document.getElementById('stats-phase-label').textContent = state.phaseTwoActive ? `Фаза II (${maxCap} кв.)` : 'Фаза I (50 кв.)';
+      document.getElementById('stat-coziness').textContent = coz;
+      document.getElementById('stat-coziness-bar').style.width = `${coz}%`;
+      document.getElementById('stat-rent-per-apt').textContent = formatMoney(getRentPerApartment());
+      document.getElementById('stat-floors').textContent = state.floorsCount;
+      document.getElementById('stat-wings').textContent = state.wingsCount;
+      document.getElementById('stat-repair-cost').textContent = formatMoney(repCost);
+      document.getElementById('stat-pirozhki-max').textContent = formatMoney(pirReward);
+      document.getElementById('stat-pirozhki-sold').textContent = state.pirozhkiSoldCount || 0;
+      document.getElementById('stat-total-collected').textContent = formatMoney(state.totalCollected);
+    }
+
+    // =========================================================================
+    // 13. МИНИ-ИГРЫ (ПРОВОДКА / КВАРТПЛАТА / ПИРОЖКИ)
+    // =========================================================================
+    let activeMgTimer = null;
+
+    function openMiniGame(type) {
+      const modal = document.getElementById('minigame-modal');
+      const title = document.getElementById('mg-title');
+      const icon = document.getElementById('mg-icon');
+      const body = document.getElementById('mg-body');
+      clearInterval(activeMgTimer);
+      modal.classList.remove('hidden');
+      playSfx('click');
+
+      if (type === 'wires') {
+        icon.textContent = '🔌';
+        title.textContent = 'Почини проводку';
+        const colors = [
+          { name: 'Красный', hex: '#ef4444' },
+          { name: 'Синий', hex: '#3b82f6' },
+          { name: 'Жёлтый', hex: '#eab308' },
+          { name: 'Зелёный', hex: '#22c55e' }
+        ];
+        const rightOrder = [...colors].sort(() => Math.random() - 0.5);
+        let selectedLeft = null;
+        let matched = new Set();
+
+        function renderWires() {
+          body.innerHTML = `
+            <p class="text-xs text-slate-300 mb-3">Нажми на клемму слева, а затем на клемму того же цвета справа:</p>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="space-y-2">
+                ${colors.map(c => `
+                  <button onclick="window._mgWireLeft('${c.name}')" class="w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-between border ${selectedLeft === c.name ? 'ring-2 ring-white' : 'border-white/10'} ${matched.has(c.name) ? 'opacity-40' : ''}" style="background:${c.hex}33; color:#fff;">
+                    <span>${c.name}</span><span>●</span>
+                  </button>
+                `).join('')}
+              </div>
+              <div class="space-y-2">
+                ${rightOrder.map(c => `
+                  <button onclick="window._mgWireRight('${c.name}')" class="w-full py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-between border border-white/10 ${matched.has(c.name) ? 'opacity-40' : ''}" style="background:${c.hex}33; color:#fff;">
+                    <span>●</span><span>${c.name}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        window._mgWireLeft = (name) => {
+          if (matched.has(name)) return;
+          selectedLeft = name;
+          playSfx('click');
+          renderWires();
+        };
+
+        window._mgWireRight = (name) => {
+          if (!selectedLeft || matched.has(name)) return;
+          if (selectedLeft === name) {
+            matched.add(name);
+            selectedLeft = null;
+            playSfx('coin');
+            if (matched.size === colors.length) {
+              state.budget += 35000;
+              state.miniGamesWonCount = (state.miniGamesWonCount || 0) + 1;
+              closeMiniGame();
+              showFloatingToast('+35 000 ₽ за проводку! 🔌', '#fde047');
+              saveState();
+              updateUI();
+              return;
+            }
+          } else {
+            selectedLeft = null;
+            triggerHaptic('error');
+          }
+          renderWires();
+        };
+        renderWires();
+      } else if (type === 'catch') {
+        icon.textContent = '💸';
+        title.textContent = 'Собери квартплату';
+        let score = 0;
+        let timeLeft = 10;
+        body.innerHTML = `
+          <div class="flex justify-between text-xs font-bold mb-2">
+            <span>Собрано: <b id="mg-catch-score" class="text-emerald-400">0 ₽</b></span>
+            <span>Время: <b id="mg-catch-time" class="text-amber-300">10 с</b></span>
+          </div>
+          <div id="mg-catch-arena" class="relative h-56 bg-[#120f22] rounded-xl border border-white/10 overflow-hidden"></div>
+        `;
+        const arena = document.getElementById('mg-catch-arena');
+        activeMgTimer = setInterval(() => {
+          timeLeft--;
+          const tEl = document.getElementById('mg-catch-time');
+          if (tEl) tEl.textContent = `${timeLeft} с`;
+          if (timeLeft <= 0) {
+            clearInterval(activeMgTimer);
+            const total = Math.max(15000, score);
+            state.budget += total;
+            state.miniGamesWonCount = (state.miniGamesWonCount || 0) + 1;
+            closeMiniGame();
+            showFloatingToast(`+${formatMoney(total)} ₽ 💸`, '#34d399');
+            saveState();
+            updateUI();
+            return;
+          }
+          for (let i = 0; i < 2; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = Math.random() > 0.3 ? '💵' : '🪙';
+            btn.className = 'absolute text-2xl active:scale-125 transition-transform';
+            btn.style.left = `${10 + Math.random() * 80}%`;
+            btn.style.top = `${10 + Math.random() * 75}%`;
+            btn.onclick = () => {
+              score += 7500;
+              playSfx('coin');
+              const sEl = document.getElementById('mg-catch-score');
+              if (sEl) sEl.textContent = `${formatMoney(score)} ₽`;
+              btn.remove();
+            };
+            arena.appendChild(btn);
+            setTimeout(() => btn.remove(), 1400);
+          }
+        }, 700);
+      } else if (type === 'pirozhki') {
+        icon.textContent = '🥟';
+        title.textContent = 'Пирожки Бабы Зины';
+        let baked = 0;
+        body.innerHTML = `
+          <p class="text-xs text-slate-300 mb-3">Нажимай на румяные пирожки (🥟), чтобы снять их с противня!</p>
+          <div class="grid grid-cols-3 gap-2.5" id="mg-oven-grid"></div>
+        `;
+        const grid = document.getElementById('mg-oven-grid');
+        for (let i = 0; i < 6; i++) {
+          const slot = document.createElement('button');
+          slot.className = 'h-20 rounded-xl bg-[#120f22] border border-orange-400/30 text-3xl flex items-center justify-center active:scale-90 transition';
+          slot.textContent = '🥟';
+          slot.onclick = () => {
+            if (slot.dataset.done) return;
+            slot.dataset.done = '1';
+            slot.textContent = '✅';
+            baked++;
+            playSfx('coin');
+            if (baked >= 6) {
+              state.energy = Math.min(state.maxEnergy, state.energy + 25);
+              state.budget += 30000;
+              state.pirozhkiSoldCount = (state.pirozhkiSoldCount || 0) + 1;
+              state.miniGamesWonCount = (state.miniGamesWonCount || 0) + 1;
+              closeMiniGame();
+              showFloatingToast('+25 ⚡ и +30 000 ₽ 🥟', '#fb923c');
+              saveState();
+              updateUI();
+            }
+          };
+          grid.appendChild(slot);
+        }
+      }
+    }
+
+    function closeMiniGame() {
+      clearInterval(activeMgTimer);
+      document.getElementById('minigame-modal').classList.add('hidden');
+    }
+
+    // =========================================================================
+    // 14. МОДАЛЬНЫЕ ОКНА (STARS, ИНСТРУКТАЖ, СБРОС)
+    // =========================================================================
+    function openStarsModal() {
+      updateSpeedButtonsUI();
+      document.getElementById('stars-modal').classList.remove('hidden');
+      playSfx('click');
+    }
+    function closeStarsModal() {
+      document.getElementById('stars-modal').classList.add('hidden');
+    }
+
+    function openBriefingModal() {
+      document.getElementById('briefing-modal').classList.remove('hidden');
+      playSfx('click');
+    }
+    function closeBriefingModal() {
+      document.getElementById('briefing-modal').classList.add('hidden');
+    }
+
+    function confirmResetGame() {
+      localStorage.removeItem(SAVE_KEY);
+      state = createDefaultState();
+      lastTickTime = performance.now();
+      saveState();
+      updateUI();
+      switchTab('notebook');
+      showZinaBubble('«Начинаем с чистого листа! Наведи порядок в нашем подъезде.»');
+    }
+
+    // =========================================================================
+    // 15. ГЛАВНЫЙ ИГРОВОЙ ЦИКЛ (ЗАПУСК ПО WINDOW.ONLOAD)
+    // =========================================================================
+    function gameLoop(now) {
+      const dt = Math.min(0.25, (now - lastTickTime) / 1000);
+      lastTickTime = now;
+
+      if (!state.gameEnded) {
+        // Автоматический рандомный таймер событий (~45-90 сек реального времени)
+        state.randomEventCooldown = (state.randomEventCooldown ?? 55) - dt;
+        if (state.randomEventCooldown <= 0) {
+          state.randomEventCooldown = 45 + Math.floor(Math.random() * 46);
+          triggerRandomEvent();
+        }
+
+        state.dayProgress += (dt * state.speed) / REAL_SECONDS_PER_DAY;
+        if (state.dayProgress >= 1) {
+          while (state.dayProgress >= 1 && !state.gameEnded) {
+            state.dayProgress -= 1;
+            advanceOneGameDay();
+          }
+          updateUI();
+        } else {
+          const secondsRemaining = (1 - state.dayProgress) * REAL_SECONDS_PER_DAY;
+          document.getElementById('hud-day-countdown').textContent = formatCountdown(secondsRemaining);
+          document.getElementById('day-progress-bar').style.width = `${(state.dayProgress * 100).toFixed(1)}%`;
+        }
+      }
+
+      drawBuildingScene(now);
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.onload = function () {
+      resizeCanvas();
+      updateUI();
+      checkGameCompletion(false);
+      if (state.gameEnded) {
+        reopenLastEndingModal();
+      } else if (state.day === 0 && state.movedIn === 1) {
+        setTimeout(() => {
+          showZinaBubble('«Добро пожаловать в ПОДЪЕЗД — БАБЫ ЗИНЫ! Открой мою тетрадку внизу и начни с домофона.»');
+        }, 700);
+      }
+      lastTickTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    };
+  </script>
+</body>
+</html>
